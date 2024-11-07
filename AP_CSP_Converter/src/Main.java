@@ -8,7 +8,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("gui/main.fxml"));
-        primaryStage.setTitle("大混战KC ~ v0.01");
+        primaryStage.setTitle("APCSP Reference Converter 0.1");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
