@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
@@ -11,11 +12,13 @@ public class controller {
     private final filer filer = new filer();
     @FXML
     private Text texter;
+    @FXML
+    private TextField filePath;
 
     @FXML
     public void getFileInfo(MouseEvent event) throws IOException {
-        texter.setText(filer.readFile("src/lol.txt").get(2));
-        filer.saveData(filer.readFile("src/lol.txt"));
+        texter.setText(filer.readFile(filePath.getText()).get(0));
+        filer.saveData(filer.readFile(filePath.getText()));
 
     }
 }
