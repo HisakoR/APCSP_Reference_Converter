@@ -2,12 +2,13 @@ package gui;
 
 import java.io.*;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class filer {
+    private String userPath = "src/output";
+
     public ArrayList<String> readFile(String route){
         ArrayList<String> lines = new ArrayList<>();
         try (Scanner scanner = new Scanner(new File(route))) {
@@ -18,6 +19,7 @@ public class filer {
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
+            System.out.println("目标文件不可用");
         }
         return lines;
     }
@@ -26,8 +28,8 @@ public class filer {
         LocalDateTime time = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String infoNam = time.format(formatter);
-        String directoryPath = "src/output";
-        String filePath = "src/output/" + infoNam + ".txt";
+        String directoryPath = userPath;
+        String filePath = userPath + "\\" + infoNam + ".txt";
 
         File directory = new File(directoryPath);
         if (!directory.exists()) {
@@ -62,5 +64,8 @@ public class filer {
         catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public String getUserPath(){
+        return userPath;
     }
 }
