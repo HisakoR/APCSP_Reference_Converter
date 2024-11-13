@@ -13,15 +13,20 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import scripts.processJav;
+import scripts.processPy;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class controller {
+    //文件处理器
     private final filer filer = new filer();
-    private String mode = "";
-    private static String path = "";
+    //转译模式
+    private static String mode = "";
+    //最终保存路径
+    public static String finalSavingPath = "";
+    //被读取文件的路径
+    private static String targetFile = "";
 
     @FXML
     private Button applyPro;
@@ -45,21 +50,34 @@ public class controller {
     private TextField savePath;
     @FXML
     private TextField saveFileName;
+    @FXML
+    private Text originalFile;
 
+    //关闭保存界面的方法
     @FXML
     public void savCloseWindow(){
         Stage stage = (Stage) saveCancel.getScene().getWindow();
         stage.close();
     }
-
+    //检测用户输入文件路径的方法
     @FXML
     public void getFileInfo(MouseEvent event) throws IOException {
-        path = filePath.getText();
         if (!filer.readFile(filePath.getText()).isEmpty()){
             if(langSelect.getText().equals("JAVA")){
+                targetFile = filePath.getText();
                 mode = "java";
                 showSave(event);
                 outputTex.setText("");
+                System.out.println("获取的模式：");
+                System.out.println(mode);
+            }
+            else if(langSelect.getText().equals("PYTHON")){
+                targetFile = filePath.getText();
+                mode = "python";
+                showSave(event);
+                outputTex.setText("");
+                System.out.println("获取的模式：");
+                System.out.println(mode);
             }
             else{
                 outputTex.setText("ERROR: Language not available!");
@@ -96,13 +114,16 @@ public class controller {
         }
         return loader;
     }
+    //显示设置界面的方法
     @FXML
     public void showSetting(MouseEvent event){
         dropWindow("setting", "Setting");
     }
+    //显示默认保存路径的方法
     public void setPathProm(){
         savePath.setPromptText(filer.userPath + "/");
     }
+    //刷新目标储存路径的方法
     @FXML
     public void freshFile(){
         String path = filer.userPath;
@@ -111,20 +132,61 @@ public class controller {
             path = savePath.getText();
         }
         if(saveFileName.getText().isEmpty()) {
-            reletive = (path + "/" + saveFileName.getPromptText());
+            reletive = (path + "/" + filer.getTime() + ".txt");
         }
         else {
             reletive = (path + "/" + saveFileName.getText() + ".txt");
         }
         File file = new File(reletive);
-        fileWilling.setText(file.getAbsolutePath());
+        finalSavingPath = file.getAbsolutePath();
+        fileWilling.setText(finalSavingPath);
     }
+    //显示保存界面的方法
     @FXML
     public void showSave(MouseEvent event){
         controller controller = dropWindow("save", "Save").getController();
         controller.setPathProm();
         controller.freshFile();
+        controller.setOri();
     }
+    //关闭设置界面的方法
+    @FXML
+    public void closeWindow(){
+        Stage stage = (Stage) setCancel.getScene().getWindow();
+        stage.close();
+    }
+    //退出程序的方法
+    @FXML
+    public void exitApp(){
+        System.exit(701);
+    }
+    //启动处理目标文件文本的方法
+    @FXML
+    public void processing(MouseEvent event) throws IOException {
+        System.out.println("文本源文件:");
+        System.out.println(targetFile);
+        System.out.println("将要输出的文件：");
+        System.out.println(finalSavingPath);
+        if (mode.equals("java")){
+            processJav dealer = new processJav();
+            dealer.setData(filer.readFile(targetFile));
+            dealer.turnRefJav();
+            filer.saveData(dealer.getData());
+        }
+        else if(mode.equals("python")){
+            processPy dealer = new processPy();
+            dealer.setData(filer.readFile(targetFile));
+            dealer.turnRefPy();
+            filer.saveData(dealer.getData());
+        }
+        else{
+            System.out.println("ERROR: Saving failed!");
+        }
+        Stage stage = (Stage) applyPro.getScene().getWindow();
+        stage.close();
+    }
+
+    //UI控制方法集合
     @FXML
     public void setLangPY(){
         langSelect.setText("PYTHON");
@@ -141,25 +203,10 @@ public class controller {
     public void setCHI(){
         langSetting.setText("Chinese");
     }
-    @FXML
-    public void closeWindow(){
-        Stage stage = (Stage) setCancel.getScene().getWindow();
-        stage.close();
-    }
-    @FXML
-    public void exitApp(){
-        System.exit(701);
-    }
 
+    //设置保存界面被读取文件的方法
     @FXML
-    public void proJav(MouseEvent event) throws IOException {
-        System.out.println("目标文件:");
-        System.out.println(path);
-        processJav dealer = new processJav();
-        dealer.setData(filer.readFile(path));
-        dealer.turnRefJav();
-        filer.saveData(dealer.getData());
-        Stage stage = (Stage) applyPro.getScene().getWindow();
-        stage.close();
+    public void setOri(){
+        originalFile.setText(targetFile);
     }
 }

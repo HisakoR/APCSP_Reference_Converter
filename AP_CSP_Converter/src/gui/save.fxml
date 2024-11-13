@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#freshFile" prefHeight="200.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#freshFile" onMouseMoved="#freshFile" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller">
    <children>
       <Text layoutX="21.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SavePath">
          <font>
@@ -19,8 +19,8 @@
             <Font name="Segoe UI" size="24.0" />
          </font>
       </Text>
-      <Button fx:id="applyPro" layoutX="237.0" layoutY="161.0" mnemonicParsing="false" onMouseClicked="#proJav" text="Apply" />
-      <Button fx:id="saveCancel" layoutX="305.0" layoutY="161.0" mnemonicParsing="false" onMouseClicked="#savCloseWindow" text="Cancel" />
+      <Button fx:id="applyPro" layoutX="239.0" layoutY="261.0" mnemonicParsing="false" onMouseClicked="#processing" text="Apply" />
+      <Button fx:id="saveCancel" layoutX="307.0" layoutY="261.0" mnemonicParsing="false" onMouseClicked="#savCloseWindow" text="Cancel" />
       <TextField fx:id="savePath" layoutX="145.0" layoutY="27.0" prefHeight="25.0" prefWidth="409.0" promptText="path">
          <font>
             <Font name="Segoe UI" size="13.0" />
@@ -32,12 +32,22 @@
             <Font name="Segoe UI" size="13.0" />
          </font>
       </TextField>
-      <Text layoutX="21.0" layoutY="121.0" strokeType="OUTSIDE" strokeWidth="0.0" text="following files will be created">
+      <Text layoutX="21.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="following files will be CREATED">
          <font>
             <Font name="Segoe UI" size="13.0" />
          </font>
       </Text>
-      <Text fx:id="fileWilling" fill="#00000081" layoutX="22.0" layoutY="138.0" strokeType="OUTSIDE" strokeWidth="0.0" text="waibibabo" wrappingWidth="565.2990016937256">
+      <Text fx:id="fileWilling" fill="#00000081" layoutX="22.0" layoutY="214.0" strokeType="OUTSIDE" strokeWidth="0.0" text="waibibabo" wrappingWidth="565.2990016937256">
+         <font>
+            <Font name="Segoe UI Italic" size="13.0" />
+         </font>
+      </Text>
+      <Text layoutX="21.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="following files will be READ">
+         <font>
+            <Font name="Segoe UI" size="13.0" />
+         </font>
+      </Text>
+      <Text fx:id="originalFile" fill="#00000081" layoutX="22.0" layoutY="133.0" strokeType="OUTSIDE" strokeWidth="0.0" text="waibibabo" wrappingWidth="565.2990016937256">
          <font>
             <Font name="Segoe UI Italic" size="13.0" />
          </font>

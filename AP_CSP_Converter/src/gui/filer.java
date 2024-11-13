@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static gui.controller.finalSavingPath;
+
 public class filer {
     public static String userPath = "src/output";
 
@@ -22,15 +24,21 @@ public class filer {
         }
         return lines;
     }
-
-    public void saveData(ArrayList<String> lines) throws IOException {
+    public String getTime(){
         LocalDateTime time = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String infoNam = time.format(formatter);
-        String directoryPath = userPath;
-        String filePath = userPath + "\\" + infoNam + ".txt";
+        return time.format(formatter);
+    }
 
+    public void saveData(ArrayList<String> lines) throws IOException {
+        String filePath = finalSavingPath;
+        File filering = new File(filePath);
+        String directoryPath = filering.getParentFile().getAbsolutePath();
         File directory = new File(directoryPath);
+        System.out.println("获取的文件：");
+        System.out.println(filePath);
+        System.out.println("获取的父系文件夹：");
+        System.out.println(directoryPath);
         if (!directory.exists()) {
             if (directory.mkdir()) {
                 System.out.println("文件夹创建成功");
