@@ -12,11 +12,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import scripts.processJav;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class controller {
     private final filer filer = new filer();
+    private String mode = "";
+    private static String path = "";
+
+    @FXML
+    private Button applyPro;
     @FXML
     private Text texter;
     @FXML
@@ -29,7 +37,6 @@ public class controller {
     private Text outputTex;
     @FXML
     private Button setCancel;
-
     @FXML
     private Text fileWilling;
     @FXML
@@ -47,10 +54,12 @@ public class controller {
 
     @FXML
     public void getFileInfo(MouseEvent event) throws IOException {
+        path = filePath.getText();
         if (!filer.readFile(filePath.getText()).isEmpty()){
             if(langSelect.getText().equals("JAVA")){
+                mode = "java";
                 showSave(event);
-                outputTex.setText("FINISH: Result file path: " + filer.getUserPath());
+                outputTex.setText("");
             }
             else{
                 outputTex.setText("ERROR: Language not available!");
@@ -97,15 +106,18 @@ public class controller {
     @FXML
     public void freshFile(){
         String path = filer.userPath;
+        String reletive = "";
         if(!savePath.getText().isEmpty()){
             path = savePath.getText();
         }
         if(saveFileName.getText().isEmpty()) {
-            fileWilling.setText(path + "/" + saveFileName.getPromptText() + ".txt");
+            reletive = (path + "/" + saveFileName.getPromptText());
         }
         else {
-            fileWilling.setText(path + "/" + saveFileName.getText() + ".txt");
+            reletive = (path + "/" + saveFileName.getText() + ".txt");
         }
+        File file = new File(reletive);
+        fileWilling.setText(file.getAbsolutePath());
     }
     @FXML
     public void showSave(MouseEvent event){
@@ -137,5 +149,17 @@ public class controller {
     @FXML
     public void exitApp(){
         System.exit(701);
+    }
+
+    @FXML
+    public void proJav(MouseEvent event) throws IOException {
+        System.out.println("目标文件:");
+        System.out.println(path);
+        processJav dealer = new processJav();
+        dealer.setData(filer.readFile(path));
+        dealer.turnRefJav();
+        filer.saveData(dealer.getData());
+        Stage stage = (Stage) applyPro.getScene().getWindow();
+        stage.close();
     }
 }

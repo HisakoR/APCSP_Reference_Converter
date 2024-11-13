@@ -9,25 +9,25 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#freshFile" prefHeight="200.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller">
    <children>
-      <Text layoutX="20.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Save path">
+      <Text layoutX="21.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SavePath">
          <font>
             <Font name="Segoe UI" size="24.0" />
          </font>
       </Text>
-      <Text layoutX="20.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="File Name">
+      <Text layoutX="21.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FileName">
          <font>
             <Font name="Segoe UI" size="24.0" />
          </font>
       </Text>
-      <Button layoutX="237.0" layoutY="161.0" mnemonicParsing="false" text="Apply" />
+      <Button fx:id="applyPro" layoutX="237.0" layoutY="161.0" mnemonicParsing="false" onMouseClicked="#proJav" text="Apply" />
       <Button fx:id="saveCancel" layoutX="305.0" layoutY="161.0" mnemonicParsing="false" onMouseClicked="#savCloseWindow" text="Cancel" />
-      <TextField fx:id="savePath" layoutX="144.0" layoutY="28.0" prefHeight="25.0" prefWidth="409.0" promptText="path">
+      <TextField fx:id="savePath" layoutX="145.0" layoutY="27.0" prefHeight="25.0" prefWidth="409.0" promptText="path">
          <font>
             <Font name="Segoe UI" size="13.0" />
          </font>
       </TextField>
-      <Button layoutX="549.0" layoutY="28.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="29.0" text="..." />
-      <TextField fx:id="saveFileName" layoutX="145.0" layoutY="71.0" prefHeight="25.0" prefWidth="434.0" promptText="Local time.txt">
+      <Button layoutX="550.0" layoutY="27.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="29.0" text="..." />
+      <TextField fx:id="saveFileName" layoutX="146.0" layoutY="60.0" prefHeight="25.0" prefWidth="434.0" promptText="LocalTime.txt">
          <font>
             <Font name="Segoe UI" size="13.0" />
          </font>
@@ -37,7 +37,7 @@
             <Font name="Segoe UI" size="13.0" />
          </font>
       </Text>
-      <Text fx:id="fileWilling" layoutX="22.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="waibibabo" wrappingWidth="565.2990016937256">
+      <Text fx:id="fileWilling" fill="#00000081" layoutX="22.0" layoutY="138.0" strokeType="OUTSIDE" strokeWidth="0.0" text="waibibabo" wrappingWidth="565.2990016937256">
          <font>
             <Font name="Segoe UI Italic" size="13.0" />
          </font>

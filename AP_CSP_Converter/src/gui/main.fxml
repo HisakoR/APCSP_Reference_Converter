@@ -58,7 +58,7 @@
             <Font name="Segoe UI Bold" size="13.0" />
          </font>
       </Button>
-      <Text fill="#0000001d" layoutX="48.0" layoutY="563.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Copyright (c) 2024 楠z✰HisakoR" wrappingWidth="212.0">
+      <Text fill="#0000001d" layoutX="45.0" layoutY="563.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Copyright (c) 2024 楠z✰HisakoR &amp; LLLLouie" wrappingWidth="278.0">
          <font>
             <Font name="Segoe UI" size="13.0" />
          </font>
