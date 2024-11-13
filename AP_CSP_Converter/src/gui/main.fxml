@@ -10,58 +10,58 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller">
    <children>
-      <Text fx:id="texter" layoutX="49.0" layoutY="291.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Target path" wrappingWidth="212.0">
+      <Text fx:id="texter" fill="#0000006b" layoutX="49.0" layoutY="291.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Target path" wrappingWidth="212.0">
          <font>
             <Font name="Segoe UI" size="28.0" />
          </font>
       </Text>
-      <Button layoutX="49.0" layoutY="368.0" mnemonicParsing="false" onMouseClicked="#getFileInfo" prefHeight="35.0" prefWidth="135.0" text="Convert！">
+      <Button layoutX="49.0" layoutY="368.0" mnemonicParsing="false" onMouseClicked="#getFileInfo" prefHeight="35.0" prefWidth="135.0" text="Convert" textFill="#00000098">
          <font>
-            <Font name="Segoe UI" size="13.0" />
+            <Font name="Segoe UI Bold" size="13.0" />
          </font></Button>
       <TextField fx:id="filePath" layoutX="48.0" layoutY="314.0" prefHeight="34.0" prefWidth="704.0" promptText="Enter the path of the file to be converted">
          <font>
-            <Font name="Segoe UI" size="13.0" />
+            <Font name="Segoe UI" size="16.0" />
          </font>
       </TextField>
-      <MenuButton fx:id="langSelect" alignment="CENTER" layoutX="49.0" layoutY="212.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="135.0" text="choose">
+      <MenuButton fx:id="langSelect" alignment="CENTER" layoutX="49.0" layoutY="212.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="135.0" text="choose" textFill="#0000009a">
         <items>
           <MenuItem mnemonicParsing="false" onAction="#setLangJV" text="JAVA" />
           <MenuItem mnemonicParsing="false" onAction="#setLangPY" text="PYTHON" />
         </items>
          <font>
-            <Font name="Segoe UI" size="13.0" />
+            <Font name="Segoe UI Bold" size="13.0" />
          </font>
       </MenuButton>
-      <Text layoutX="49.0" layoutY="189.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Programming language">
+      <Text fill="#00000069" layoutX="49.0" layoutY="189.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Programming language">
          <font>
             <Font name="Segoe UI" size="29.0" />
          </font>
       </Text>
-      <Text layoutX="49.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="AP CSP Converter 0.1">
+      <Text fill="#0000009a" layoutX="49.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="AP CSP Converter 0.1">
          <font>
             <Font name="Segoe UI Bold" size="58.0" />
          </font>
       </Text>
-      <Text fx:id="outputTex" fill="#0000006c" layoutX="49.0" layoutY="445.0" strokeType="OUTSIDE" strokeWidth="0.0">
+      <Text fx:id="outputTex" fill="#0000004d" layoutX="49.0" layoutY="445.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" ">
          <font>
-            <Font name="Segoe UI Italic" size="20.0" />
+            <Font name="Segoe UI Italic" size="17.0" />
          </font>
       </Text>
-      <Button layoutX="690.0" layoutY="513.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="setting">
+      <Button layoutX="690.0" layoutY="513.0" mnemonicParsing="false" onMouseClicked="#showSetting" prefHeight="25.0" prefWidth="63.0" text="setting" textFill="#0000009b">
+         <font>
+            <Font name="Segoe UI Bold" size="13.0" />
+         </font>
+      </Button>
+      <Button layoutX="690.0" layoutY="546.0" mnemonicParsing="false" onMouseClicked="#exitApp" prefHeight="25.0" prefWidth="63.0" text="exit" textFill="#0000009d">
+         <font>
+            <Font name="Segoe UI Bold" size="13.0" />
+         </font>
+      </Button>
+      <Text fill="#0000001d" layoutX="48.0" layoutY="563.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Copyright (c) 2024 楠z✰HisakoR" wrappingWidth="212.0">
          <font>
             <Font name="Segoe UI" size="13.0" />
          </font>
-      </Button>
-      <Button layoutX="690.0" layoutY="479.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="credit">
-         <font>
-            <Font name="Segoe UI" size="13.0" />
-         </font>
-      </Button>
-      <Button layoutX="690.0" layoutY="546.0" mnemonicParsing="false" onMouseClicked="#exitApp" prefHeight="25.0" prefWidth="63.0" text="exit">
-         <font>
-            <Font name="Segoe UI" size="13.0" />
-         </font>
-      </Button>
+      </Text>
    </children>
 </AnchorPane>

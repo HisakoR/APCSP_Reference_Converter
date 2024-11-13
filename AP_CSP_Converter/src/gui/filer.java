@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class filer {
-    private String userPath = "src/output";
+    public static String userPath = "src/output";
 
     public ArrayList<String> readFile(String route){
         ArrayList<String> lines = new ArrayList<>();
@@ -18,7 +18,6 @@ public class filer {
             }
         }
         catch (FileNotFoundException e) {
-            e.printStackTrace();
             System.out.println("目标文件不可用");
         }
         return lines;
@@ -67,5 +66,8 @@ public class filer {
     }
     public String getUserPath(){
         return userPath;
+    }
+    public void setUserPath(String newPath){
+        userPath = newPath;
     }
 }
