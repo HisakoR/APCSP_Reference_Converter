@@ -52,6 +52,9 @@ public class controller {
     private TextField saveFileName;
     @FXML
     private Text originalFile;
+    @FXML
+    private Text modeText;
+
 
     //关闭保存界面的方法
     @FXML
@@ -140,6 +143,7 @@ public class controller {
         File file = new File(reletive);
         finalSavingPath = file.getAbsolutePath();
         fileWilling.setText(finalSavingPath);
+        modeText.setText("TYPE | " + mode.toUpperCase());
     }
     //显示保存界面的方法
     @FXML

@@ -52,5 +52,10 @@
             <Font name="Segoe UI Italic" size="13.0" />
          </font>
       </Text>
+      <Text fx:id="modeText" layoutX="198.0" layoutY="115.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TYPE">
+         <font>
+            <Font name="Segoe UI Bold" size="13.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>
