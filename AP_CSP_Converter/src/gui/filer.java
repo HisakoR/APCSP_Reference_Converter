@@ -9,7 +9,7 @@ import java.util.Scanner;
 import static gui.controller.finalSavingPath;
 
 public class filer {
-    public static String userPath = "src/output";
+    public static String userPath = "output";
 
     public ArrayList<String> readFile(String route){
         ArrayList<String> lines = new ArrayList<>();
