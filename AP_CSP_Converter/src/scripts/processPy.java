@@ -24,43 +24,56 @@ public class processPy {
             //初始化位置
             ArrayList<String> listLine = new ArrayList<>();
             boolean isOdd = false;
-            for (int z = 0; z < stringTarget.size(); z += 2){
-                if(stringTarget.get(0) == 0){
-                    System.out.println("检测到开头为string");
-                    System.out.println("可用代码列表将从奇数开始");
-                    isOdd = true;
-                    z += 1;
-                    listLine.add(line.substring(stringTarget.get(z), stringTarget.get(z + 1)));
-                }
-                else {
-                    System.out.println("检测到开头为代码");
-                    System.out.println("可用代码列表将从偶数开始");
-                    listLine.add(line.substring(z, stringTarget.get(z)));
-                }
+            if(stringTarget.get(0) == 0){
+                System.out.println("检测到开头为string");
+                System.out.println("可用代码列表将从奇数开始");
+                isOdd = true;
             }
+            else {
+                System.out.println("检测到开头为代码");
+                System.out.println("可用代码列表将从偶数开始");
+            }
+            listLine.add(line.substring(0, stringTarget.get(0)));
+            System.out.println("处理队列添加：");
+            System.out.println(line.substring(0, stringTarget.get(0)));
+            for (int gama = 0; gama < stringTarget.size() - 1; gama++){
+                listLine.add(line.substring(stringTarget.get(gama), stringTarget.get(gama + 1)));
+                System.out.println("处理队列添加：");
+                System.out.println(line.substring(stringTarget.get(gama), stringTarget.get(gama + 1)));
+            }
+            listLine.add(line.substring(stringTarget.get(stringTarget.size() - 1)));
+            System.out.println("处理队列添加：");
+            System.out.println(line.substring(stringTarget.get(stringTarget.size() - 1)));
             /*
             向列表添加string部分和代码部分
             单数index为string部分，跳过
             偶数为代码部分，处理
+            若开头为string部分，则运行相反功能
              */
-            for (int deta = 0; deta < listLine.size(); deta += 2){
+            int inindex = 0;
+            if (isOdd){
+                inindex = 2;
+            }
+            for (int deta = inindex; deta < listLine.size(); deta += 2){
                 //处理行方法 while例
                 if (listLine.get(deta).contains("while")){
                     listLine.set(deta, listLine.get(deta).replace("while", "REPEAT UNTIL"));
                 }
                 //处理行方法
             }
+
             String outputLine = "";
             for (String s : listLine) {
-                outputLine = outputLine + s;
+                outputLine += s;
             }
             data.set(x, outputLine);
         }
     }
+
     public ArrayList<Integer> findString(String line){
         ArrayList<Integer> indexs = new ArrayList<>();
         for (int y = 0; y < line.length(); y++){
-            if (line.substring(y , y + 1).contains("'")){
+            if (line.substring(y , y + 1).contains("\"")){
                 indexs.add(y);
             }
         }

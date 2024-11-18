@@ -10,6 +10,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import scripts.processJav;
@@ -27,6 +28,7 @@ public class controller {
     public static String finalSavingPath = "";
     //被读取文件的路径
     private static String targetFile = "";
+    private static Stage stage;
 
     @FXML
     private Button applyPro;
@@ -54,7 +56,32 @@ public class controller {
     private Text originalFile;
     @FXML
     private Text modeText;
+    @FXML
+    private Button getTargetFile;
 
+    public static void setStage(Stage primStage){
+        stage = primStage;
+    }
+
+    //选择目标文件
+    public String getTargeto(){
+        //需要改进
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("File Path");
+        try{
+            File choosenFile = fileChooser.showOpenDialog(stage);
+            return choosenFile.getAbsolutePath();
+        }
+        catch (Exception ignored){
+            System.out.println("未选择任何文件");
+            return null;
+        }
+    }
+    //设置文件路径的按钮
+    @FXML
+    public void setGetTargetFile(MouseEvent event){
+        filePath.setText(getTargeto());
+    }
 
     //关闭保存界面的方法
     @FXML

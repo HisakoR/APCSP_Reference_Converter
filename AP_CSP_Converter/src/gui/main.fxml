@@ -63,6 +63,11 @@
             <Font name="Segoe UI" size="13.0" />
          </font>
       </Text>
-      <Button layoutX="532.0" layoutY="212.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="38.0" text="..." />
+      <Button fx:id="getTargetFile" layoutX="532.0" layoutY="212.0" mnemonicParsing="false" onMouseClicked="#setGetTargetFile" prefHeight="34.0" prefWidth="38.0" text="..." />
+      <Text fill="#0000006b" layoutX="173.0" layoutY="283.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please ensure the code is compilable" wrappingWidth="278.0">
+         <font>
+            <Font name="Segoe UI Italic" size="17.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>
