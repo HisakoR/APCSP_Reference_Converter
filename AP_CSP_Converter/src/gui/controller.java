@@ -65,7 +65,6 @@ public class controller {
 
     //选择目标文件
     public String getTargeto(){
-        //需要改进
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("File Path");
         try{
