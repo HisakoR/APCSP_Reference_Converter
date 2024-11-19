@@ -15,6 +15,13 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
+/AP_CSP_Converter/src/output
+/AP_CSP_Converter/output
+/AP_CSP_Converter/.idea
+AP_CSP_Converter/.idea/libraries/lib.xml
+/AP_CSP_Converter/.idea
+
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
