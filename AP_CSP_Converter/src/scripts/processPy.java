@@ -69,15 +69,15 @@ public class processPy {
                 inindex = 2;
             }
             for (int deta = inindex; deta < listLine.size(); deta += 2){
-                //listLine.set(deta, simplePlacement(listLine.get(deta), "while", "REPEAT UNTIL"));
+                listLine.set(deta, simplePlacement(listLine.get(deta), "while", "REPEAT UNTIL", false));
                 //处理行方法 while例
-                //listLine.set(deta, simplePlacement(listLine.get(deta), "print", "DISPLAY"));
+                listLine.set(deta, simplePlacement(listLine.get(deta), "print", "DISPLAY", false));
                 //print例
-                //listLine.set(deta, simplePlacement(listLine.get(deta), "=", "<-"));
-                //赋值例，需要修改
-                //listLine.set(deta, simplePlacement(listLine.get(deta), "def", "PROCEDURE"));
-                //方程例，需要修改
-                //请添加判定：目标前后index是否有内容，避免错误替换
+                listLine.set(deta, simplePlacement(listLine.get(deta), "def", "PROCEDURE", false));
+                //方程例
+                //isMark = false例不可用, 请修复
+                listLine.set(deta, simplePlacement(listLine.get(deta), "=", "<-", true));
+                //赋值例
             }
 
             String outputLine = "";
@@ -109,11 +109,41 @@ public class processPy {
     public String simplePlacement(String targerLine, String target, String replacement, boolean isMark){
         String output = targerLine;
         if (targerLine.contains(target)){
+            System.out.println("检测到" + target + ", 正在进行更改");
             ArrayList<Integer> targetIndex = findString(targerLine, target);
             //targerLine中所有target的index
             ArrayList<Integer> availableIndex = new ArrayList<>();
             //可用目标的index
+            for (int index : targetIndex) {
+                boolean isAvailable = false; //标记该索引是否有效
+                //目标字符串的前后字符
+                char beforeChar = (index > 0) ? targerLine.charAt(index - 1) : ' ';
+                char afterChar = (index + target.length() < targerLine.length()) ? targerLine.charAt(index + target.length()) : ' ';
 
+                if (isMark) {
+                    //如果isMark为true, 前后字符都不能是target
+                    if (beforeChar != target.charAt(0) && afterChar != target.charAt(0)) {
+                        isAvailable = true;
+                    }
+                }
+                else {
+                    //如果isMark为false, 前后必须为空格或括号
+                    if ((beforeChar == ' ' || beforeChar == '(') && (afterChar == ' ' || afterChar == ')')) {
+                        isAvailable = true;
+                    }
+                }
+                //如果是可用的, 添加到availableIndex
+                if (isAvailable) {
+                    availableIndex.add(index);
+                }
+            }
+            //按可用索引替换
+            for (int i = availableIndex.size() - 1; i >= 0; i--) { //从后往前替换，避免索引改变
+                int replaceIndex = availableIndex.get(i);
+                output = output.substring(0, replaceIndex) + replacement + output.substring(replaceIndex + target.length());
+            }
+
+            //例过程
             //targerLine中:
             //检测有哪些index可用
             //可用条件:
@@ -122,10 +152,12 @@ public class processPy {
             //如果isMark是false:
             //1.目标前后是空格或小括号,不能是其他字符
             //添加到可用目标的数列
-
             //添加循环: 将所有可用index处的target替换成replacement
-
             //替换后,将处理过的文本储存在output中
+            //isMark: 目标替换是否为符号
+            //例: + - * /
+            //制作+= 或 -=检测
+
             return output;
         }
         else {
