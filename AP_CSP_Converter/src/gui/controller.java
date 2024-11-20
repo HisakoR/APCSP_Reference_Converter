@@ -56,8 +56,6 @@ public class controller {
     private Text originalFile;
     @FXML
     private Text modeText;
-    @FXML
-    private Button getTargetFile;
 
     public static void setStage(Stage primStage){
         stage = primStage;
@@ -79,7 +77,10 @@ public class controller {
     //设置文件路径的按钮
     @FXML
     public void setGetTargetFile(MouseEvent event){
-        filePath.setText(getTargeto());
+        String pathway = getTargeto();
+        if(pathway != null){
+            filePath.setText(pathway);
+        }
     }
 
     //关闭保存界面的方法
