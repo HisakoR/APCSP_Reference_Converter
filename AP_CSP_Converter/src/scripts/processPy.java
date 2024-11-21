@@ -14,6 +14,11 @@ public class processPy {
         for (int x = 0; x < data.size(); x++){
             System.out.println("=====第" + (x + 1) +"行修改开始=====");
             String line = data.get(x);
+            String referenceLine = "";
+            if(line.contains("#")){
+                referenceLine = line.substring(line.indexOf("#"));
+                line = line.substring(0, line.indexOf("#"));
+            }
             ArrayList<Integer> stringTarget = findString(line, "\"");
             /*
             原理：stringTarget中的双数位置为“的开头，而单数位置表示了”的结尾
@@ -79,6 +84,10 @@ public class processPy {
                 //print例
                 listLine.set(deta, simplePlacement(listLine.get(deta), "def", "PROCEDURE", null, false, false, false));
                 //方程例
+                listLine.set(deta, simplePlacement(listLine.get(deta), ">=", "≥", null, true, false, false));
+                //大等于例
+                listLine.set(deta, simplePlacement(listLine.get(deta), "<=", "≤", null, true, false, false));
+                //小等于例
                 listLine.set(deta, simplePlacement(listLine.get(deta), "=", "<-", '!', true, false, false));
                 //赋值例
                 listLine.set(deta, simplePlacement(listLine.get(deta), "elif", "ELSE IF", null, false, false, false));
@@ -91,6 +100,8 @@ public class processPy {
                 //输入例
                 listLine.set(deta, simplePlacement(listLine.get(deta), "%", "MOD", null, true, false, false));
                 //余数例
+                listLine.set(deta, simplePlacement(listLine.get(deta), "!=", "≠", null, true, false, false));
+                //非等于例
                 listLine.set(deta, simplePlacement(listLine.get(deta), "==", "=", null, true, false, false));
                 //等于例
                 listLine.set(deta, simplePlacement(listLine.get(deta), "&", "AND", null, true, true, false));
@@ -99,16 +110,18 @@ public class processPy {
                 //OR例
                 listLine.set(deta, simplePlacement(listLine.get(deta), "!", "NOT", null, true, true, false));
                 //非例
-                listLine.set(deta, simplePlacement(listLine.get(deta), "return", "RETURN", null, false, false, true));
+                listLine.set(deta, repRETURN(listLine.get(deta)));
                 //返回例
                 listLine.set(deta, simplePlacement(listLine.get(deta), "len", "LENGTH", null, false, false, false));
                 //长度例
+                listLine.set(deta, repLists("apend", "APPEND", listLine.get(deta)));
             }
 
             String outputLine = "";
             for (String s : listLine) {
                 outputLine += s;
             }
+            outputLine = outputLine + referenceLine;
             data.set(x, outputLine);
             System.out.println("行输出：");
             System.out.println(outputLine);
@@ -215,26 +228,28 @@ public class processPy {
                 }
             }
 
-            //例过程
-            //targerLine中:
-            //检测有哪些index可用
-            //可用条件:
-            //如果isMark是true:
-            //1.目标前后是空格或其他字符,不能是和target相同的字符
-            //如果isMark是false:
-            //1.目标前后是空格或小括号,不能是其他字符
-            //添加到可用目标的数列
-            //添加循环: 将所有可用index处的target替换成replacement
-            //替换后,将处理过的文本储存在output中
-            //isMark: 目标替换是否为符号
-            //例: + - * /
-            //制作+= 或 -=检测
-
             return output;
         }
         else {
             System.out.println("未进行有关" + target + "的更改，目标不存在");
             return output;
         }
+    }
+
+    public String repLists(String target, String replacement, String line){
+        String listName = "";
+        if (line.contains(target)){
+            listName = line.substring(0, line.indexOf(target) - 1);
+            //需要改进
+            line = replacement + line.substring(line.indexOf(target) + target.length(), line.indexOf("(")) + listName + line.substring(line.indexOf("("));
+        }
+        return line;
+    }
+    //替换return的方法
+    public String repRETURN(String line){
+        if(line.contains("return")){
+            line = line.substring(0, line.indexOf("return")) + "RETURN(" + line.substring(line.indexOf("return") + 6).strip() + ")";
+        }
+        return line;
     }
 }
