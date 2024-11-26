@@ -11,7 +11,7 @@ import static gui.controller.finalSavingPath;
 public class pyTest {
     public static void main(String[]args) throws IOException {
         Scanner louie = new Scanner(System.in);
-        System.out.println("选择测试:\n[0]标准测试\n[1]MIDTERM测试\n[2]嵌套测试");
+        System.out.println("选择测试:\n[0]标准测试\n[1]MIDTERM测试\n[2]嵌套测试\n[3]MIDTERM测试（CLASS）");
         String introo = louie.nextLine();
         int read = 11;
         try{
@@ -29,6 +29,9 @@ public class pyTest {
         }
         else if(read == 2){
             testnam = "loopAndCondition";
+        }
+        else if(read == 3){
+            testnam = "termTheClassTest";
         }
         else{
             System.out.println("目标测试不可用");

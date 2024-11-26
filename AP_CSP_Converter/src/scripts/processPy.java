@@ -1,27 +1,73 @@
 package scripts;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class processPy {
     private ArrayList<String> data = new ArrayList<>();
     private ArrayList<bracket> tabSpc = new ArrayList<>();
     private boolean generate = false;
-    private String typpe = "";
+    private boolean isReplaceLine = false;
+    private boolean shouldBaked = false;
+
+    //设置data数据
     public void setData(ArrayList<String> datal){
         this.data = datal;
     }
 
+    //开始处理的方法
     public void turnRefPy(){
         System.out.println("=====开始转换代码=====");
         for (int x = 0; x < data.size(); x++){
             System.out.println("=====第" + (x + 1) +"行修改开始=====");
             String line = data.get(x);
             String referenceLine = "";
+            isReplaceLine = false;
+            //检测当前行是否满足添加}的条件
+            System.out.println("添加}:" + (generate && !(line).isBlank()));
+            if(generate && !(line).isBlank()){
+                System.out.println("当前行：\n" + line);
+                System.out.println("替换行位置: \n" + tabSpc.get(tabSpc.size() - 1).getLineNum());
+                System.out.println("目标行替换所需空格数：\n" + tabSpc.get(tabSpc.size() - 1).getSpaces());
+                System.out.println("目标空格数小于等于替换行数:\n" + tabSpcCheck((line)));
+                System.out.println("目标位置不等于替换行位置:\n" + (tabSpc.get(tabSpc.size() - 1).getLineNum() != x));
+                while(tabSpcCheck((line + referenceLine)) && tabSpc.get(tabSpc.size() - 1).getLineNum() != x){
+                    String sace = "";
+                    for(int l = 0; l < tabSpc.get(tabSpc.size() - 1).getSpaces() - 1; l++){
+                        sace += " ";
+                    }
+                    data.add(x, sace + "}");
+                    tabSpc.remove(tabSpc.size() - 1);
+                    if (tabSpc.isEmpty()){
+                        generate = false;
+                        break;
+                    }
+                    x++;
+                }
+            }
+            line = data.get(x);
+            //20241126可能出现bug↑
+
             if(line.contains("#")){
                 referenceLine = line.substring(line.indexOf("#"));
                 line = line.substring(0, line.indexOf("#"));
             }
+
+            /* 连续注释（未完成）
+            else if(line.contains("'''")){
+                x++;
+                while(x < data.size()){
+                    if (!data.get(x).contains("'''")){
+                        x++;
+                    }
+                    else{
+                        x++;
+                        break;
+                    }
+                }
+            }
+            line = data.get(x);
+            */
+
             ArrayList<Integer> stringTarget = findString(line, "\"");
             /*
             原理：stringTarget中的双数位置为“的开头，而单数位置表示了”的结尾
@@ -81,11 +127,12 @@ public class processPy {
                 inindex = 2;
             }
             for (int deta = inindex; deta < listLine.size(); deta += 2){
-                listLine.set(deta, simplePlacement(listLine.get(deta), "while", "REPEAT UNTIL NOT", null, false, false, false));
+
+                //listLine.set(deta, simplePlacement(listLine.get(deta), "while", "REPEAT UNTIL NOT", null, false, false, false));
                 //处理行方法 while例
                 listLine.set(deta, simplePlacement(listLine.get(deta), "print", "DISPLAY", null, false, false, false));
                 //print例
-                listLine.set(deta, simplePlacement(listLine.get(deta), "def", "PROCEDURE", null, false, false, false));
+                //listLine.set(deta, simplePlacement(listLine.get(deta), "def", "PROCEDURE", null, false, false, false));
                 //方程例
                 listLine.set(deta, simplePlacement(listLine.get(deta), ">=", "≥", null, true, false, false));
                 //大等于例
@@ -107,19 +154,24 @@ public class processPy {
                 //OR例
                 listLine.set(deta, simplePlacement(listLine.get(deta), "!", "NOT", null, true, true, false));
                 //非例
-                listLine.set(deta, simplePlacement(listLine.get(deta), "len", "LENGTH", null, false, false, false));
-                //长度例
-                listLine.set(deta, repElif(listLine.get(deta)));
-                listLine.set(deta, repIf(listLine.get(deta)));
-                listLine.set(deta, repELSE(listLine.get(deta)));
-                listLine.set(deta, repRETURN(listLine.get(deta)));
-                listLine.set(deta, repFor(listLine.get(deta)));
-                listLine.set(deta, repMeth("random.randint", "RANDOM", listLine.get(deta)));
-                //返回例
-                listLine.set(deta, repLists("append", "APPEND", listLine.get(deta)));
-                listLine.set(deta, repLists("insert", "INSERT", listLine.get(deta)));
-                listLine.set(deta, repLists("remove", "REMOVE", listLine.get(deta)));
-                //列表方法例
+                //listLine.set(deta, simplePlacement(listLine.get(deta), "len", "LENGTH", null, false, false, false));
+                //长度例 需要改进
+
+                //新方法替换合集
+                listLine.set(deta, repMeth("len", "LENGTH", listLine.get(deta)));                    //替换len()
+                listLine.set(deta, repLists("append", "APPEND", listLine.get(deta)));                //替换list.append()
+                listLine.set(deta, repLists("insert", "INSERT", listLine.get(deta)));                //替换list.insert()
+                listLine.set(deta, repLists("remove", "REMOVE", listLine.get(deta)));                //替换list.remove()
+                listLine.set(deta, repClass(listLine.get(deta), x));                                                    //替换class
+                listLine.set(deta, repDef(listLine.get(deta), x));                                                      //替换def
+                listLine.set(deta, repWhile(listLine.get(deta), x));                                                    //替换while
+                listLine.set(deta, repElif(listLine.get(deta), x));                                                     //替换elif
+                listLine.set(deta, repIf(listLine.get(deta), x));                                                       //替换if
+                listLine.set(deta, repELSE(listLine.get(deta), x));                                                     //替换else
+                listLine.set(deta, repRETURN(listLine.get(deta)));                                                      //替换return
+                listLine.set(deta, repFor(listLine.get(deta), x));                                                      //替换for
+                listLine.set(deta, repMaus(line, listLine.get(deta), x));                                               //替换:
+                listLine.set(deta, repMeth("random.randint", "RANDOM", listLine.get(deta)));         //替换random.randint()
             }
 
             String outputLine = "";
@@ -130,28 +182,23 @@ public class processPy {
             data.set(x, outputLine);
             System.out.println("行输出：");
             System.out.println(outputLine);
-            System.out.println("当前行类型: " + typpe);
-            if(generate && !outputLine.isBlank()){
-                if(tabSpc.size() >= 2){
-                    System.out.println("补足行类型: " + tabSpc.get(tabSpc.size() - 2).getType());
-                    while(tabSpcCheck(outputLine) && !tabSpc.get(tabSpc.size() - 1).getType().equals(typpe)){
-                        String sace = "";
-                        for(int l = 0; l < tabSpc.get(tabSpc.size() - 1).getSpaces() - 1; l++){
-                            sace += " ";
-                        }
-                        data.add(x, sace + "}");
-                        tabSpc.remove(tabSpc.size() - 1);
-                        if (tabSpc.isEmpty()){
-                            generate = false;
-                            break;
-                        }
-                        x += 1;
-                    }
-                }
-            }
-
             System.out.println("=====第" + (x + 1) +"行修改结束=====");
-            typpe = "";
+            if(x + 1 == data.size() && tabSpc.isEmpty()){
+                data.add("--------------DONE-APCSP-CONVERTER--------------");
+                x += 1;
+            }
+            else if(x + 1 == data.size() && !tabSpc.isEmpty()){
+                for (int n = tabSpc.size() - 1; n > -1; n--) {
+                    String spac = "";
+                    for (int r = 0; r < tabSpc.get(n).getSpaces() - 1; r++) {
+                        spac = spac + " ";
+                    }
+                    data.add(spac + "}");
+                    x += 1;
+                }
+                data.add("--------------DONE-APCSP-CONVERTER--------------");
+                x += 1;
+            }
         }
         System.out.println("=====结束=====");
     }
@@ -176,7 +223,6 @@ public class processPy {
     }
 
     public String simplePlacement(String targerLine, String target, String replacement, Character expections, boolean isMark, boolean isStandard, boolean isMethod){
-        //参数解析
         //targerLine - 需要进行替换的数据
         //target - 被替换的内容
         //replacement - 要替换成的内容
@@ -186,9 +232,7 @@ public class processPy {
         //isMethod - 是否要将目标后的内容填充进括号中，例如return expression改写为return(expression)
         String output = targerLine;
         if (targerLine.contains(target)){
-            System.out.println("检测到" + target + ", 正在进行更改");
             ArrayList<Integer> targetIndex = findString(targerLine, target);
-            System.out.println("目标index包括");
             for(int laufen : targetIndex){
                 System.out.println(laufen);
             }
@@ -201,22 +245,17 @@ public class processPy {
                 char beforeChar;
                 if(index > 0){
                     beforeChar = targerLine.charAt(index - 1);
-                    System.out.println("目标前一个字符为:" + beforeChar);
                 }
                 else {
                     beforeChar = 'L';
-                    System.out.println("目标前没有字符");
                 }
                 char afterChar = (index + target.length() < targerLine.length()) ? targerLine.charAt(index + target.length()) : ' ';
-                System.out.println("目标后一个字符为:" + afterChar);
 
                 if (isMark) {
                     //如果isMark为true, 前后字符都不能是target, 也不能是expections
                     if (beforeChar != target.charAt(0) && afterChar != target.charAt(0)) {
                         if(expections == null || (beforeChar != expections && afterChar != expections)){
-                            System.out.println("前后判定: " + target.charAt(0));
                             isAvailable = true;
-                            System.out.println("目标index可用" + index);
                         }
                     }
                 }
@@ -225,7 +264,6 @@ public class processPy {
                     if ((beforeChar == ' ' || beforeChar == '.' || beforeChar == '(' || beforeChar == ')' || index == 0) &&
                             (afterChar == ' '|| afterChar == ':' || afterChar == '(' || afterChar == ')')) {
                         isAvailable = true;
-                        System.out.println("目标index可用" + index);
                     }
                 }
                 //如果是可用的, 添加到availableIndex
@@ -256,18 +294,10 @@ public class processPy {
             return output;
         }
         else {
-            System.out.println("未进行有关" + target + "的更改，目标不存在");
             return output;
         }
     }
-    //替换方法的方法
-    public String repMeth(String target, String replacement, String line){
-        if (line.contains(target)){
-            line = line.substring(0, line.indexOf(target)) + replacement + line.substring(line.indexOf(target) + target.length());
-        }
-        return line;
-    }
-    //替换list方法的方法
+    //替换list方法集合的方法
     public String repLists(String target, String replacement, String line){
         if (line.contains(target)){
             String listName = line.substring(0, line.indexOf(target) - 1);
@@ -284,8 +314,16 @@ public class processPy {
         }
         return line;
     }
+    //替换方法的方法
+    public String repMeth(String target, String replacement, String line){
+        if (line.contains(target)){
+            line = line.substring(0, line.indexOf(target)) + replacement + line.substring(line.indexOf(target) + target.length());
+        }
+        return line;
+    }
+    //检测是否符合闭合括号的条件
     public boolean tabSpcCheck(String line){
-        int testSpc = 0;
+        int testSpc = 1;
         for(int x = 0; x < line.length(); x++){
             if(line.charAt(x) != ' '){
                 break;
@@ -294,95 +332,129 @@ public class processPy {
         }
         return testSpc <= tabSpc.get(tabSpc.size() - 1).getSpaces();
     }
-    //替换for的方法
-    public String repFor(String line){
-        if (line.contains("for")){
-            String condition = line.substring(line.indexOf("for"), line.indexOf(":") + 1);
-            condition = "FOR EACH" + condition.substring(condition.indexOf("for") + 3, condition.indexOf("in")) + "IN" + condition.substring(condition.indexOf("in") + 2, condition.indexOf(":"));
-            line = line.substring(0, line.indexOf("for")) + condition + line.substring(line.indexOf(":"));
-
-            line = line.substring(0, line.length() - 1) + "{";
+    //替换行内冒号的方法
+    public String repMaus(String fullLine, String line, int lineNum){//需要判断整行
+        System.out.println();
+        if(line.contains(":") && isReplaceLine){
+            if (shouldBaked){
+                line = line.substring(0, line.length() - 1) + "){";
+            }
+            else{
+                line = line.substring(0, line.length() - 1) + "{";
+            }
             int tpc = 0;
-            for(int x = 0; x < line.length(); x++){
-                if(line.charAt(x) != ' '){
+            for(int x = 0; x < fullLine.length(); x++){
+                if(fullLine.charAt(x) != ' '){
                     break;
                 }
                 tpc += 1;
             }
             tpc += 1;
-            tabSpc.add(new bracket("for", tpc));
+            tabSpc.add(new bracket(lineNum, tpc));
             generate = true;
+            shouldBaked = false;
             System.out.println("前方含有" + (tpc - 1) + "个空格");
-            typpe = "for";
+        }
+        return line;
+    }
+    //替换while的方法
+    public String repWhile(String line, int lineNum){
+        if (line.contains("while")){
+            if (line.contains(":")){
+                String condition = line.substring(line.indexOf("while"), line.indexOf(":") + 1);
+                condition = "REPEAT UNTIL(NOT " + condition.substring(condition.indexOf("while") + 5, condition.indexOf(":")).strip() + ")";
+                line = line.substring(0, line.indexOf("while")) + condition + line.substring(line.indexOf(":"));
+            }
+            else{
+                String condition = line.substring(line.indexOf("while"));
+                condition = "REPEAT UNTIL(NOT " + condition.substring(condition.indexOf("while") + 5).strip();
+                shouldBaked = true;
+                line = line.substring(0, line.indexOf("while")) + condition;
+            }
+            isReplaceLine = true;
+        }
+        return line;
+    }
+    //替换for的方法
+    public String repFor(String line, int lineNum){
+        if (line.contains("for")){
+            if (line.contains(":")){
+                String condition = line.substring(line.indexOf("for"), line.indexOf(":") + 1);
+                condition = "FOR EACH" + condition.substring(condition.indexOf("for") + 3, condition.indexOf("in")) + "IN" + condition.substring(condition.indexOf("in") + 2, condition.indexOf(":"));
+                line = line.substring(0, line.indexOf("for")) + condition + line.substring(line.indexOf(":"));
+            }
+            else{
+                String condition = line.substring(line.indexOf("for"));
+                condition = "FOR EACH" + condition.substring(condition.indexOf("for") + 3, condition.indexOf("in")) + "IN" + condition.substring(condition.indexOf("in") + 2);
+                line = line.substring(0, line.indexOf("for")) + condition;
+            }
+            isReplaceLine = true;
         }
         return line;
     }
     //替换if的方法
-    public String repIf(String line){
+    public String repIf(String line, int lineNum){
         if (line.contains("if")){
-            String condition = line.substring(line.indexOf("if"), line.indexOf(":") + 1);
-            condition = "IF" + condition.substring(condition.indexOf("if") + 2, condition.indexOf(":"));
-            line = line.substring(0, line.indexOf("if")) + condition + line.substring(line.indexOf(":"));
-
-            line = line.substring(0, line.length() - 1) + "{";
-            int tpc = 0;
-            for(int x = 0; x < line.length(); x++){
-                if(line.charAt(x) != ' '){
-                    break;
-                }
-                tpc += 1;
+            if (line.contains(":")){
+                String condition = line.substring(line.indexOf("if"), line.indexOf(":") + 1);
+                condition = "IF(" + condition.substring(condition.indexOf("if") + 3, condition.indexOf(":")) + ")";
+                line = line.substring(0, line.indexOf("if")) + condition + line.substring(line.indexOf(":"));
             }
-            tpc += 1;
-            tabSpc.add(new bracket("if", tpc));
-            generate = true;
-            System.out.println("前方含有" + (tpc - 1) + "个空格");
-            typpe = "if";
+            else{
+                String condition = line.substring(line.indexOf("if"));
+                condition = "IF(" + condition.substring(condition.indexOf("if") + 3);
+                shouldBaked = true;
+                line = line.substring(0, line.indexOf("if")) + condition;
+            }
+            isReplaceLine = true;
         }
         return line;
     }
     //替换else if的方法
-    public String repElif(String line){
+    public String repElif(String line, int lineNum){
         if (line.contains("elif")){
-            String condition = line.substring(line.indexOf("elif"), line.indexOf(":") + 1);
-            condition = "ELSE IF" + condition.substring(condition.indexOf("elif") + 4, condition.indexOf(":"));
-            line = line.substring(0, line.indexOf("elif")) + condition + line.substring(line.indexOf(":"));
-
-            line = line.substring(0, line.length() - 1) + "{";
-            int tpc = 0;
-            for(int x = 0; x < line.length(); x++){
-                if(line.charAt(x) != ' '){
-                    break;
-                }
-                tpc += 1;
+            if (line.contains(":")){
+                String condition = line.substring(line.indexOf("elif"), line.indexOf(":") + 1);
+                condition = "ELSE IF(" + condition.substring(condition.indexOf("elif") + 5, condition.indexOf(":")) + ")";
+                line = line.substring(0, line.indexOf("elif")) + condition + line.substring(line.indexOf(":"));
             }
-            tpc += 1;
-            tabSpc.add(new bracket("elif", tpc));
-            generate = true;
-            System.out.println("前方含有" + (tpc - 1) + "个空格");
-            typpe = "elif";
+            else{
+                String condition = line.substring(line.indexOf("elif"));
+                condition = "ELSE IF(" + condition.substring(condition.indexOf("elif") + 5);
+                shouldBaked = true;
+                line = line.substring(0, line.indexOf("elif")) + condition;
+            }
+            isReplaceLine = true;
         }
         return line;
     }
-    //替换else if的方法
-    public String repELSE(String line){
+    //替换else的方法
+    public String repELSE(String line, int lineNum){
         if (line.contains("else")){
             String condition = line.substring(line.indexOf("else"), line.indexOf(":") + 1);
             condition = "ELSE" + condition.substring(condition.indexOf("else") + 4, condition.indexOf(":"));
             line = line.substring(0, line.indexOf("else")) + condition + line.substring(line.indexOf(":"));
-
-            line = line.substring(0, line.length() - 1) + "{";
-            int tpc = 0;
-            for(int x = 0; x < line.length(); x++){
-                if(line.charAt(x) != ' '){
-                    break;
-                }
-                tpc += 1;
-            }
-            tpc += 1;
-            tabSpc.add(new bracket("else", tpc));
-            generate = true;
-            System.out.println("前方含有" + (tpc - 1) + "个空格");
-            typpe = "else";
+            isReplaceLine = true;
+        }
+        return line;
+    }
+    //替换def的方法
+    public String repDef(String line, int lineNum){
+        if (line.contains("def")){
+            String condition = line.substring(line.indexOf("def"));
+            condition = "PROCEDURE" + condition.substring(condition.indexOf("def") + 3);
+            line = line.substring(0, line.indexOf("def")) + condition;
+            isReplaceLine = true;
+        }
+        return line;
+    }
+    //替换def的方法
+    public String repClass(String line, int lineNum){
+        if (line.contains("class")){
+            String condition = line.substring(line.indexOf("class"));
+            condition = "CLASS" + condition.substring(condition.indexOf("class") + 5);
+            line = line.substring(0, line.indexOf("class")) + condition;
+            isReplaceLine = true;
         }
         return line;
     }

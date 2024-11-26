@@ -67,7 +67,6 @@ public class filer {
                 bw.write(line);
                 bw.newLine();
             }
-            bw.write("-------Done-by-AP-CSP-Converter-------");
         }
         catch (IOException e) {
             e.printStackTrace();

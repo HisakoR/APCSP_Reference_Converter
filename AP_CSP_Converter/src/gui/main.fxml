@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller">
    <children>
-      <Text fx:id="texter" fill="#0000006b" layoutX="30.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Target path | " wrappingWidth="212.0">
+      <Text fx:id="texter" fill="#0000006b" layoutX="30.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Target path:" wrappingWidth="212.0">
          <font>
             <Font name="Segoe UI" size="22.0" />
          </font>
@@ -33,7 +29,7 @@
             <Font name="Segoe UI Bold" size="16.0" />
          </font>
       </MenuButton>
-      <Text fill="#00000069" layoutX="30.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Programming language | ">
+      <Text fill="#00000069" layoutX="30.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Programming language:">
          <font>
             <Font name="Segoe UI" size="22.0" />
          </font>
@@ -64,9 +60,14 @@
          </font>
       </Text>
       <Button fx:id="getTargetFile" layoutX="532.0" layoutY="212.0" mnemonicParsing="false" onMouseClicked="#setGetTargetFile" prefHeight="34.0" prefWidth="38.0" text="..." />
-      <Text fill="#0000006b" layoutX="173.0" layoutY="283.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please ensure the code is compilable" wrappingWidth="278.0">
+      <Text fill="#0000006b" layoutX="208.0" layoutY="273.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please ensure the code is compilable no shadows build-in name" wrappingWidth="278.0">
          <font>
             <Font name="Segoe UI Italic" size="17.0" />
+         </font>
+      </Text>
+      <Text fill="#868686" layoutX="181.0" layoutY="292.0" strokeType="OUTSIDE" strokeWidth="0.0" text="!">
+         <font>
+            <Font name="Segoe UI" size="40.0" />
          </font>
       </Text>
    </children>
