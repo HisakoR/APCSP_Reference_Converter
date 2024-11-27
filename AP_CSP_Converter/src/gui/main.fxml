@@ -22,7 +22,7 @@
       </TextField>
       <MenuButton fx:id="langSelect" alignment="CENTER" layoutX="30.0" layoutY="132.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="135.0" text="choose" textFill="#0000009a">
         <items>
-          <MenuItem mnemonicParsing="false" onAction="#setLangJV" text="JAVA" />
+          <MenuItem mnemonicParsing="false" onAction="#setLangJV" text="JAVA(soon)" />
           <MenuItem mnemonicParsing="false" onAction="#setLangPY" text="PYTHON" />
         </items>
          <font>

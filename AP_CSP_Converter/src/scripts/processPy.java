@@ -13,6 +13,10 @@ public class processPy {
     public void setData(ArrayList<String> datal){
         this.data = datal;
     }
+    //java8补充
+    public static boolean isBlank(String str) {
+        return str == null || str.trim().isEmpty();
+    }
 
     //开始处理的方法
     public void turnRefPy(){
@@ -23,8 +27,8 @@ public class processPy {
             String referenceLine = "";
             isReplaceLine = false;
             //检测当前行是否满足添加}的条件
-            System.out.println("添加}:" + (generate && !(line).isBlank()));
-            if(generate && !(line).isBlank()){
+            System.out.println("添加}:" + (generate && !isBlank(line)));
+            if(generate && !isBlank(line)){
                 System.out.println("当前行：\n" + line);
                 System.out.println("替换行位置: \n" + tabSpc.get(tabSpc.size() - 1).getLineNum());
                 System.out.println("目标行替换所需空格数：\n" + tabSpc.get(tabSpc.size() - 1).getSpaces());
@@ -52,23 +56,20 @@ public class processPy {
                 line = line.substring(0, line.indexOf("#"));
             }
 
-            /* 连续注释（未完成）
-            else if(line.contains("'''")){
+            //连续注释（未完成）
+            if(line.contains("'''")){
                 x++;
                 while(x < data.size()){
                     if (!data.get(x).contains("'''")){
                         x++;
                     }
                     else{
-                        x++;
                         break;
                     }
                 }
             }
-            line = data.get(x);
-            */
-
-            ArrayList<Integer> stringTarget = findString(line, "\"");
+            else{
+                ArrayList<Integer> stringTarget = findString(line, "\"");
             /*
             原理：stringTarget中的双数位置为“的开头，而单数位置表示了”的结尾
             由此，操作数据时应当跳过双数位置的数值和单数位置数值中的任何数
@@ -76,128 +77,129 @@ public class processPy {
             于是跳过string中0-12的位置与35-55的位置
             这样可以跳过用户代码中的字符串，由此避免错误的修改
             */
-            //初始化位置
-            ArrayList<String> listLine = new ArrayList<>();
-            boolean isOdd = false;
-            boolean isNan = false;
-            if(stringTarget.isEmpty()) {
-                System.out.println("未检测到string");
-                System.out.println("将跳过可用代码列表");
-                isNan = true;
-            }
-            else if(stringTarget.get(0) == 0){
-                System.out.println("检测到开头为string");
-                System.out.println("可用代码列表将从奇数开始");
-                isOdd = true;
-            }
-            else {
-                System.out.println("检测到开头为代码");
-                System.out.println("可用代码列表将从偶数开始");
-            }
-            if(!isNan){
-                listLine.add(line.substring(0, stringTarget.get(0)));
-                System.out.println("处理初始队列添加：");
-                System.out.println(line.substring(0, stringTarget.get(0)));
-                System.out.println("目标双引号数：" +  stringTarget.size());
-                for (int lauken : stringTarget){
-                    System.out.println(lauken);
+                //初始化位置
+                ArrayList<String> listLine = new ArrayList<>();
+                boolean isOdd = false;
+                boolean isNan = false;
+                if(stringTarget.isEmpty()) {
+                    System.out.println("未检测到string");
+                    System.out.println("将跳过可用代码列表");
+                    isNan = true;
                 }
-                for (int gama = 0; gama < stringTarget.size() - 1; gama++) {
-                    listLine.add(line.substring(stringTarget.get(gama), stringTarget.get(gama + 1)));
+                else if(stringTarget.get(0) == 0){
+                    System.out.println("检测到开头为string");
+                    System.out.println("可用代码列表将从奇数开始");
+                    isOdd = true;
+                }
+                else {
+                    System.out.println("检测到开头为代码");
+                    System.out.println("可用代码列表将从偶数开始");
+                }
+                if(!isNan){
+                    listLine.add(line.substring(0, stringTarget.get(0)));
+                    System.out.println("处理初始队列添加：");
+                    System.out.println(line.substring(0, stringTarget.get(0)));
+                    System.out.println("目标双引号数：" +  stringTarget.size());
+                    for (int lauken : stringTarget){
+                        System.out.println(lauken);
+                    }
+                    for (int gama = 0; gama < stringTarget.size() - 1; gama++) {
+                        listLine.add(line.substring(stringTarget.get(gama), stringTarget.get(gama + 1)));
+                        System.out.println("处理队列添加：");
+                        System.out.println(line.substring(stringTarget.get(gama), stringTarget.get(gama + 1)));
+                    }
+                    listLine.add(line.substring(stringTarget.get(stringTarget.size() - 1)));
+                    System.out.println("处理最终队列添加：");
+                    System.out.println(line.substring(stringTarget.get(stringTarget.size() - 1)));
+                }
+                else{
                     System.out.println("处理队列添加：");
-                    System.out.println(line.substring(stringTarget.get(gama), stringTarget.get(gama + 1)));
+                    System.out.println(line);
+                    listLine.add(line);
                 }
-                listLine.add(line.substring(stringTarget.get(stringTarget.size() - 1)));
-                System.out.println("处理最终队列添加：");
-                System.out.println(line.substring(stringTarget.get(stringTarget.size() - 1)));
-            }
-            else{
-                System.out.println("处理队列添加：");
-                System.out.println(line);
-                listLine.add(line);
-            }
             /*
             向列表添加string部分和代码部分
             单数index为string部分，跳过
             偶数为代码部分，处理
             若开头为string部分，则运行相反功能
              */
-            int inindex = 0;
-            if (isOdd){
-                inindex = 2;
-            }
-            for (int deta = inindex; deta < listLine.size(); deta += 2){
+                int inindex = 0;
+                if (isOdd){
+                    inindex = 2;
+                }
+                for (int deta = inindex; deta < listLine.size(); deta += 2){
 
-                //listLine.set(deta, simplePlacement(listLine.get(deta), "while", "REPEAT UNTIL NOT", null, false, false, false));
-                //处理行方法 while例
-                listLine.set(deta, simplePlacement(listLine.get(deta), "print", "DISPLAY", null, false, false, false));
-                //print例
-                //listLine.set(deta, simplePlacement(listLine.get(deta), "def", "PROCEDURE", null, false, false, false));
-                //方程例
-                listLine.set(deta, simplePlacement(listLine.get(deta), ">=", "≥", null, true, false, false));
-                //大等于例
-                listLine.set(deta, simplePlacement(listLine.get(deta), "<=", "≤", null, true, false, false));
-                //小等于例
-                listLine.set(deta, simplePlacement(listLine.get(deta), "=", "<-", '!', true, false, false));
-                //赋值例
-                listLine.set(deta, simplePlacement(listLine.get(deta), "input", "INPUT", null, false, false, false));
-                //输入例
-                listLine.set(deta, simplePlacement(listLine.get(deta), "%", "MOD", null, true, false, false));
-                //余数例
-                listLine.set(deta, simplePlacement(listLine.get(deta), "!=", "≠", null, true, false, false));
-                //非等于例
-                listLine.set(deta, simplePlacement(listLine.get(deta), "==", "=", null, true, false, false));
-                //等于例
-                listLine.set(deta, simplePlacement(listLine.get(deta), "&", "AND", null, true, true, false));
-                //and例
-                listLine.set(deta, simplePlacement(listLine.get(deta), "|", "OR", null, true, true, false));
-                //OR例
-                listLine.set(deta, simplePlacement(listLine.get(deta), "!", "NOT", null, true, true, false));
-                //非例
-                //listLine.set(deta, simplePlacement(listLine.get(deta), "len", "LENGTH", null, false, false, false));
-                //长度例 需要改进
+                    //listLine.set(deta, simplePlacement(listLine.get(deta), "while", "REPEAT UNTIL NOT", null, false, false, false));
+                    //处理行方法 while例
+                    listLine.set(deta, simplePlacement(listLine.get(deta), "print", "DISPLAY", null, false, false, false));
+                    //print例
+                    //listLine.set(deta, simplePlacement(listLine.get(deta), "def", "PROCEDURE", null, false, false, false));
+                    //方程例
+                    listLine.set(deta, simplePlacement(listLine.get(deta), ">=", "≥", null, true, false, false));
+                    //大等于例
+                    listLine.set(deta, simplePlacement(listLine.get(deta), "<=", "≤", null, true, false, false));
+                    //小等于例
+                    listLine.set(deta, simplePlacement(listLine.get(deta), "=", "<-", '!', true, false, false));
+                    //赋值例
+                    listLine.set(deta, simplePlacement(listLine.get(deta), "input", "INPUT", null, false, false, false));
+                    //输入例
+                    listLine.set(deta, simplePlacement(listLine.get(deta), "%", "MOD", null, true, false, false));
+                    //余数例
+                    listLine.set(deta, simplePlacement(listLine.get(deta), "!=", "≠", null, true, false, false));
+                    //非等于例
+                    listLine.set(deta, simplePlacement(listLine.get(deta), "==", "=", null, true, false, false));
+                    //等于例
+                    listLine.set(deta, simplePlacement(listLine.get(deta), "&", "AND", null, true, true, false));
+                    //and例
+                    listLine.set(deta, simplePlacement(listLine.get(deta), "|", "OR", null, true, true, false));
+                    //OR例
+                    listLine.set(deta, simplePlacement(listLine.get(deta), "!", "NOT", null, true, true, false));
+                    //非例
+                    //listLine.set(deta, simplePlacement(listLine.get(deta), "len", "LENGTH", null, false, false, false));
+                    //长度例 需要改进
 
-                //新方法替换合集
-                listLine.set(deta, repMeth("len", "LENGTH", listLine.get(deta)));                    //替换len()
-                listLine.set(deta, repLists("append", "APPEND", listLine.get(deta)));                //替换list.append()
-                listLine.set(deta, repLists("insert", "INSERT", listLine.get(deta)));                //替换list.insert()
-                listLine.set(deta, repLists("remove", "REMOVE", listLine.get(deta)));                //替换list.remove()
-                listLine.set(deta, repClass(listLine.get(deta), x));                                                    //替换class
-                listLine.set(deta, repDef(listLine.get(deta), x));                                                      //替换def
-                listLine.set(deta, repWhile(listLine.get(deta), x));                                                    //替换while
-                listLine.set(deta, repElif(listLine.get(deta), x));                                                     //替换elif
-                listLine.set(deta, repIf(listLine.get(deta), x));                                                       //替换if
-                listLine.set(deta, repELSE(listLine.get(deta), x));                                                     //替换else
-                listLine.set(deta, repRETURN(listLine.get(deta)));                                                      //替换return
-                listLine.set(deta, repFor(listLine.get(deta), x));                                                      //替换for
-                listLine.set(deta, repMaus(line, listLine.get(deta), x));                                               //替换:
-                listLine.set(deta, repMeth("random.randint", "RANDOM", listLine.get(deta)));         //替换random.randint()
-            }
+                    //新方法替换合集
+                    listLine.set(deta, repMeth("len", "LENGTH", listLine.get(deta)));                    //替换len()
+                    listLine.set(deta, repLists("append", "APPEND", listLine.get(deta)));                //替换list.append()
+                    listLine.set(deta, repLists("insert", "INSERT", listLine.get(deta)));                //替换list.insert()
+                    listLine.set(deta, repLists("remove", "REMOVE", listLine.get(deta)));                //替换list.remove()
+                    listLine.set(deta, repClass(listLine.get(deta), x));                                                    //替换class
+                    listLine.set(deta, repDef(listLine.get(deta), x));                                                      //替换def
+                    listLine.set(deta, repWhile(listLine.get(deta), x));                                                    //替换while
+                    listLine.set(deta, repElif(listLine.get(deta), x));                                                     //替换elif
+                    listLine.set(deta, repIf(listLine.get(deta), x));                                                       //替换if
+                    listLine.set(deta, repELSE(listLine.get(deta), x));                                                     //替换else
+                    listLine.set(deta, repRETURN(listLine.get(deta)));                                                      //替换return
+                    listLine.set(deta, repFor(listLine.get(deta), x));                                                      //替换for
+                    listLine.set(deta, repMaus(line, listLine.get(deta), x));                                               //替换:
+                    listLine.set(deta, repMeth("random.randint", "RANDOM", listLine.get(deta)));         //替换random.randint()
+                }
 
-            String outputLine = "";
-            for (String s : listLine) {
-                outputLine += s;
-            }
-            outputLine = outputLine + referenceLine;
-            data.set(x, outputLine);
-            System.out.println("行输出：");
-            System.out.println(outputLine);
-            System.out.println("=====第" + (x + 1) +"行修改结束=====");
-            if(x + 1 == data.size() && tabSpc.isEmpty()){
-                data.add("--------------DONE-APCSP-CONVERTER--------------");
-                x += 1;
-            }
-            else if(x + 1 == data.size() && !tabSpc.isEmpty()){
-                for (int n = tabSpc.size() - 1; n > -1; n--) {
-                    String spac = "";
-                    for (int r = 0; r < tabSpc.get(n).getSpaces() - 1; r++) {
-                        spac = spac + " ";
-                    }
-                    data.add(spac + "}");
+                String outputLine = "";
+                for (String s : listLine) {
+                    outputLine += s;
+                }
+                outputLine = outputLine + referenceLine;
+                data.set(x, outputLine);
+                System.out.println("行输出：");
+                System.out.println(outputLine);
+                System.out.println("=====第" + (x + 1) +"行修改结束=====");
+                if(x + 1 == data.size() && tabSpc.isEmpty()){
+                    data.add("--------------DONE-APCSP-CONVERTER--------------");
                     x += 1;
                 }
-                data.add("--------------DONE-APCSP-CONVERTER--------------");
-                x += 1;
+                else if(x + 1 == data.size() && !tabSpc.isEmpty()){
+                    for (int n = tabSpc.size() - 1; n > -1; n--) {
+                        String spac = "";
+                        for (int r = 0; r < tabSpc.get(n).getSpaces() - 1; r++) {
+                            spac = spac + " ";
+                        }
+                        data.add(spac + "}");
+                        x += 1;
+                    }
+                    data.add("--------------DONE-APCSP-CONVERTER--------------");
+                    x += 1;
+                }
             }
         }
         System.out.println("=====结束=====");
@@ -300,14 +302,25 @@ public class processPy {
     //替换list方法集合的方法
     public String repLists(String target, String replacement, String line){
         if (line.contains(target)){
-            String listName = line.substring(0, line.indexOf(target) - 1);
+            int spacInfront = 0;
+            for (int o = 0; o < line.length(); o++){
+                if (line.charAt(o) != ' '){
+                    break;
+                }
+                spacInfront++;
+            }
+
+            String listName = line.substring(spacInfront, line.indexOf(target) - 1);
 
             String[] containment = line.substring(line.indexOf("(") + 1, line.indexOf(")")).split(",");
             String outputLine = "";
             //需要改进
-            outputLine = replacement + "(" + listName;
+            for(int w = 0; w < spacInfront; w++){
+                outputLine = outputLine + " ";
+            }
+            outputLine = outputLine + replacement + "(" + listName;
             for (String s : containment) {
-                outputLine = outputLine + ", " + s.strip();
+                outputLine = outputLine + ", " + s.trim();
             }
             outputLine = outputLine + ")" + line.substring(line.indexOf(")") + 1);
             line = outputLine;
@@ -362,12 +375,12 @@ public class processPy {
         if (line.contains("while")){
             if (line.contains(":")){
                 String condition = line.substring(line.indexOf("while"), line.indexOf(":") + 1);
-                condition = "REPEAT UNTIL(NOT " + condition.substring(condition.indexOf("while") + 5, condition.indexOf(":")).strip() + ")";
+                condition = "REPEAT UNTIL(NOT " + condition.substring(condition.indexOf("while") + 5, condition.indexOf(":")).trim() + ")";
                 line = line.substring(0, line.indexOf("while")) + condition + line.substring(line.indexOf(":"));
             }
             else{
                 String condition = line.substring(line.indexOf("while"));
-                condition = "REPEAT UNTIL(NOT " + condition.substring(condition.indexOf("while") + 5).strip();
+                condition = "REPEAT UNTIL(NOT " + condition.substring(condition.indexOf("while") + 5).trim();
                 shouldBaked = true;
                 line = line.substring(0, line.indexOf("while")) + condition;
             }
@@ -397,12 +410,12 @@ public class processPy {
         if (line.contains("if")){
             if (line.contains(":")){
                 String condition = line.substring(line.indexOf("if"), line.indexOf(":") + 1);
-                condition = "IF(" + condition.substring(condition.indexOf("if") + 3, condition.indexOf(":")) + ")";
+                condition = "IF(" + condition.substring(condition.indexOf("if") + 2, condition.indexOf(":")) + ")";
                 line = line.substring(0, line.indexOf("if")) + condition + line.substring(line.indexOf(":"));
             }
             else{
                 String condition = line.substring(line.indexOf("if"));
-                condition = "IF(" + condition.substring(condition.indexOf("if") + 3);
+                condition = "IF(" + condition.substring(condition.indexOf("if") + 2);
                 shouldBaked = true;
                 line = line.substring(0, line.indexOf("if")) + condition;
             }
@@ -415,12 +428,12 @@ public class processPy {
         if (line.contains("elif")){
             if (line.contains(":")){
                 String condition = line.substring(line.indexOf("elif"), line.indexOf(":") + 1);
-                condition = "ELSE IF(" + condition.substring(condition.indexOf("elif") + 5, condition.indexOf(":")) + ")";
+                condition = "ELSE IF(" + condition.substring(condition.indexOf("elif") + 4, condition.indexOf(":")) + ")";
                 line = line.substring(0, line.indexOf("elif")) + condition + line.substring(line.indexOf(":"));
             }
             else{
                 String condition = line.substring(line.indexOf("elif"));
-                condition = "ELSE IF(" + condition.substring(condition.indexOf("elif") + 5);
+                condition = "ELSE IF(" + condition.substring(condition.indexOf("elif") + 4);
                 shouldBaked = true;
                 line = line.substring(0, line.indexOf("elif")) + condition;
             }
@@ -461,7 +474,7 @@ public class processPy {
     //替换return的方法
     public String repRETURN(String line){
         if(line.contains("return")){
-            line = line.substring(0, line.indexOf("return")) + "RETURN(" + line.substring(line.indexOf("return") + 6).strip() + ")";
+            line = line.substring(0, line.indexOf("return")) + "RETURN(" + line.substring(line.indexOf("return") + 6).trim() + ")";
         }
         return line;
     }
