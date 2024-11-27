@@ -13,7 +13,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="lib" level="project" />
     <orderEntry type="library" name="Python 3.9 (AP_CSP_Converter) interpreter library" level="application" />
   </component>
 </module>

@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller">
    <children>
       <Text fx:id="texter" fill="#0000006b" layoutX="30.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Target path:" wrappingWidth="212.0">
          <font>
@@ -22,7 +22,6 @@
       </TextField>
       <MenuButton fx:id="langSelect" alignment="CENTER" layoutX="30.0" layoutY="132.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="135.0" text="choose" textFill="#0000009a">
         <items>
-          <MenuItem mnemonicParsing="false" onAction="#setLangJV" text="JAVA(soon)" />
           <MenuItem mnemonicParsing="false" onAction="#setLangPY" text="PYTHON" />
         </items>
          <font>
@@ -44,7 +43,7 @@
             <Font name="Segoe UI Italic" size="17.0" />
          </font>
       </Text>
-      <Button layoutX="507.0" layoutY="319.0" mnemonicParsing="false" onMouseClicked="#showSetting" prefHeight="25.0" prefWidth="63.0" text="setting" textFill="#0000009b">
+      <Button layoutX="507.0" layoutY="319.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="setting" textFill="#0000009b">
          <font>
             <Font name="Segoe UI Bold" size="13.0" />
          </font>

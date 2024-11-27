@@ -10,6 +10,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -74,12 +75,34 @@ public class controller {
             return null;
         }
     }
+    //选择目标文件夹
+    public String getDectory(){
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Folder Path");
+        try{
+            File choosenFile = directoryChooser.showDialog(stage);
+            return choosenFile.getAbsolutePath();
+        }
+        catch (Exception ignored){
+            System.out.println("未选择任何文件");
+            return null;
+        }
+    }
     //设置文件路径的按钮
     @FXML
     public void setGetTargetFile(MouseEvent event){
         String pathway = getTargeto();
         if(pathway != null){
             filePath.setText(pathway);
+        }
+    }
+
+    //设置文件夹路径的按钮
+    @FXML
+    public void setDirectAth(MouseEvent event){
+        String pathway = getDectory();
+        if(pathway != null){
+            savePath.setText(pathway);
         }
     }
 
