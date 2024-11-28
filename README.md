@@ -6,7 +6,7 @@ Source code runs in JDK8 in IntelliJ IDEA
 This program is still in development, please report any bug or missing replacement in discussion
 
 ## 1.DOWNLOAD
-- Download the file named with version in release
+- Download the file named with version in Releases
 
 - Extract the zip file
 
