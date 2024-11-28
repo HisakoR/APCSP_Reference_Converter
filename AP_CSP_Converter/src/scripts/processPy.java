@@ -8,6 +8,7 @@ public class processPy {
     private boolean generate = false;
     private boolean isReplaceLine = false;
     private boolean shouldBaked = false;
+    private boolean retbaked = false;
 
     //设置data数据
     public void setData(ArrayList<String> datal){
@@ -178,6 +179,10 @@ public class processPy {
                 String outputLine = "";
                 for (String s : listLine) {
                     outputLine += s;
+                }
+                if (retbaked){
+                    outputLine += ")";
+                    retbaked = false;
                 }
                 outputLine = outputLine + referenceLine;
                 data.set(x, outputLine);
@@ -474,7 +479,8 @@ public class processPy {
     //替换return的方法
     public String repRETURN(String line){
         if(line.contains("return")){
-            line = line.substring(0, line.indexOf("return")) + "RETURN(" + line.substring(line.indexOf("return") + 6).trim() + ")";
+            retbaked = true;
+            line = line.substring(0, line.indexOf("return")) + "RETURN(" + line.substring(line.indexOf("return") + 6).trim();
         }
         return line;
     }
