@@ -415,12 +415,12 @@ public class processPy {
         if (line.contains("if")){
             if (line.contains(":")){
                 String condition = line.substring(line.indexOf("if"), line.indexOf(":") + 1);
-                condition = "IF(" + condition.substring(condition.indexOf("if") + 2, condition.indexOf(":")) + ")";
+                condition = "IF(" + condition.substring(condition.indexOf("if") + 2, condition.indexOf(":")).trim() + ")";
                 line = line.substring(0, line.indexOf("if")) + condition + line.substring(line.indexOf(":"));
             }
             else{
                 String condition = line.substring(line.indexOf("if"));
-                condition = "IF(" + condition.substring(condition.indexOf("if") + 2);
+                condition = "IF(" + condition.substring(condition.indexOf("if") + 2).trim();
                 shouldBaked = true;
                 line = line.substring(0, line.indexOf("if")) + condition;
             }
@@ -433,12 +433,12 @@ public class processPy {
         if (line.contains("elif")){
             if (line.contains(":")){
                 String condition = line.substring(line.indexOf("elif"), line.indexOf(":") + 1);
-                condition = "ELSE IF(" + condition.substring(condition.indexOf("elif") + 4, condition.indexOf(":")) + ")";
+                condition = "ELSE IF(" + condition.substring(condition.indexOf("elif") + 4, condition.indexOf(":")).trim() + ")";
                 line = line.substring(0, line.indexOf("elif")) + condition + line.substring(line.indexOf(":"));
             }
             else{
                 String condition = line.substring(line.indexOf("elif"));
-                condition = "ELSE IF(" + condition.substring(condition.indexOf("elif") + 4);
+                condition = "ELSE IF(" + condition.substring(condition.indexOf("elif") + 4).trim();
                 shouldBaked = true;
                 line = line.substring(0, line.indexOf("elif")) + condition;
             }
