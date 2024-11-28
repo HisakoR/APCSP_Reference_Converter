@@ -57,7 +57,6 @@ public class processPy {
                 line = line.substring(0, line.indexOf("#"));
             }
 
-            //连续注释（未完成）
             if(line.contains("'''")){
                 x++;
                 while(x < data.size()){
@@ -148,18 +147,22 @@ public class processPy {
                     //余数例
                     listLine.set(deta, simplePlacement(listLine.get(deta), "!=", "≠", null, true, false, false));
                     //非等于例
-                    listLine.set(deta, simplePlacement(listLine.get(deta), "==", "=", null, true, false, false));
+                    //listLine.set(deta, simplePlacement(listLine.get(deta), "==", "=", null, true, false, false));
                     //等于例
                     listLine.set(deta, simplePlacement(listLine.get(deta), "&", "AND", null, true, true, false));
                     //and例
                     listLine.set(deta, simplePlacement(listLine.get(deta), "|", "OR", null, true, true, false));
                     //OR例
                     listLine.set(deta, simplePlacement(listLine.get(deta), "!", "NOT", null, true, true, false));
+                    listLine.set(deta, simplePlacement(listLine.get(deta), "not", "NOT", null, false, false, false));
+                    listLine.set(deta, simplePlacement(listLine.get(deta), "or", "OR", null, false, false, false));
+                    listLine.set(deta, simplePlacement(listLine.get(deta), "and", "AND", null, false, false, false));
                     //非例
                     //listLine.set(deta, simplePlacement(listLine.get(deta), "len", "LENGTH", null, false, false, false));
                     //长度例 需要改进
 
                     //新方法替换合集
+                    listLine.set(deta, repContinuous(listLine.get(deta)));
                     listLine.set(deta, repMeth("len", "LENGTH", listLine.get(deta)));                    //替换len()
                     listLine.set(deta, repLists("append", "APPEND", listLine.get(deta)));                //替换list.append()
                     listLine.set(deta, repLists("insert", "INSERT", listLine.get(deta)));                //替换list.insert()
@@ -339,6 +342,44 @@ public class processPy {
         }
         return line;
     }
+    //替换连续+=格式的方法
+    public String repContinuous(String line){
+        System.out.println("开始转换连续运算符");
+        String sketchLine = line;
+        if(line.contains("=")){
+            ArrayList<Integer> indexes = new ArrayList<>();
+            for (int q = 0; q < line.length(); q++){
+                if (!sketchLine.contains("=")){
+                    System.out.println("已无等号");
+                    break;
+                }
+                else {
+                    if (indexes.isEmpty()){
+                        indexes.add(sketchLine.indexOf("="));
+                    }
+                    else{
+                        indexes.add(sketchLine.indexOf("=") + indexes.get(indexes.size() - 1) + 1);
+                    }
+                    sketchLine = line.substring(indexes.get(indexes.size() - 1) + 1);
+                    System.out.println("等号位置:" + indexes.get(indexes.size() - 1));
+                    System.out.println("当前行：" + sketchLine);
+                }
+            }
+            int shifter = 0;
+            for (Integer index : indexes) {
+                Character operator = line.charAt(index + shifter - 1);
+                Character infromOpera = line.charAt(index + shifter + 1);
+                System.out.println("前置运算符：" + operator);
+                System.out.println("后置运算符：" + infromOpera);
+                if (infromOpera.equals('=')) {
+                    line = line.substring(0, index + shifter) + line.substring(index + shifter + 1);
+                    shifter--;
+                }
+                System.out.println(line);
+            }
+        }
+        return line;
+    }
     //检测是否符合闭合括号的条件
     public boolean tabSpcCheck(String line){
         int testSpc = 1;
@@ -485,3 +526,9 @@ public class processPy {
         return line;
     }
 }
+
+/*
+待办
+连续not出现的替换失败问题
++=替换问题
+ */
