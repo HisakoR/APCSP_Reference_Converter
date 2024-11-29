@@ -1,6 +1,8 @@
 package scripts;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class processPy {
     private ArrayList<String> data = new ArrayList<>();
@@ -9,6 +11,7 @@ public class processPy {
     private boolean isReplaceLine = false;
     private boolean shouldBaked = false;
     private boolean retbaked = false;
+    private boolean modded = false;
 
     //设置data数据
     public void setData(ArrayList<String> datal){
@@ -128,40 +131,23 @@ public class processPy {
                     inindex = 2;
                 }
                 for (int deta = inindex; deta < listLine.size(); deta += 2){
+                    modded = false;
 
-                    //listLine.set(deta, simplePlacement(listLine.get(deta), "while", "REPEAT UNTIL NOT", null, false, false, false));
-                    //处理行方法 while例
                     listLine.set(deta, simplePlacement(listLine.get(deta), "print", "DISPLAY", null, false, false, false));
-                    //print例
-                    //listLine.set(deta, simplePlacement(listLine.get(deta), "def", "PROCEDURE", null, false, false, false));
-                    //方程例
                     listLine.set(deta, simplePlacement(listLine.get(deta), ">=", "≥", null, true, false, false));
-                    //大等于例
                     listLine.set(deta, simplePlacement(listLine.get(deta), "<=", "≤", null, true, false, false));
-                    //小等于例
-                    listLine.set(deta, simplePlacement(listLine.get(deta), "=", "<-", '!', true, false, false));
-                    //赋值例
+                    //listLine.set(deta, simplePlacement(listLine.get(deta), "=", "<-", '!', true, false, false));
                     listLine.set(deta, simplePlacement(listLine.get(deta), "input", "INPUT", null, false, false, false));
-                    //输入例
                     listLine.set(deta, simplePlacement(listLine.get(deta), "%", "MOD", null, true, false, false));
-                    //余数例
                     listLine.set(deta, simplePlacement(listLine.get(deta), "!=", "≠", null, true, false, false));
-                    //非等于例
                     //listLine.set(deta, simplePlacement(listLine.get(deta), "==", "=", null, true, false, false));
-                    //等于例
                     listLine.set(deta, simplePlacement(listLine.get(deta), "&", "AND", null, true, true, false));
-                    //and例
                     listLine.set(deta, simplePlacement(listLine.get(deta), "|", "OR", null, true, true, false));
-                    //OR例
                     listLine.set(deta, simplePlacement(listLine.get(deta), "!", "NOT", null, true, true, false));
                     listLine.set(deta, simplePlacement(listLine.get(deta), "not", "NOT", null, false, false, false));
                     listLine.set(deta, simplePlacement(listLine.get(deta), "or", "OR", null, false, false, false));
                     listLine.set(deta, simplePlacement(listLine.get(deta), "and", "AND", null, false, false, false));
-                    //非例
-                    //listLine.set(deta, simplePlacement(listLine.get(deta), "len", "LENGTH", null, false, false, false));
-                    //长度例 需要改进
 
-                    //新方法替换合集
                     listLine.set(deta, repContinuous(listLine.get(deta)));
                     listLine.set(deta, repMeth("len", "LENGTH", listLine.get(deta)));                    //替换len()
                     listLine.set(deta, repLists("append", "APPEND", listLine.get(deta)));                //替换list.append()
@@ -177,8 +163,12 @@ public class processPy {
                     listLine.set(deta, repFor(listLine.get(deta), x));                                                      //替换for
                     listLine.set(deta, repMaus(line, listLine.get(deta), x));                                               //替换:
                     listLine.set(deta, repMeth("random.randint", "RANDOM", listLine.get(deta)));         //替换random.randint()
+                    System.out.println("修改:" + modded);
+                    if(modded){
+                        deta -=2;
+                    }
                 }
-
+                modded = false;
                 String outputLine = "";
                 for (String s : listLine) {
                     outputLine += s;
@@ -187,6 +177,7 @@ public class processPy {
                     outputLine += ")";
                     retbaked = false;
                 }
+                outputLine = outputLine.replaceAll("cspc6126<-", "=");
                 outputLine = outputLine + referenceLine;
                 data.set(x, outputLine);
                 System.out.println("行输出：");
@@ -279,6 +270,7 @@ public class processPy {
                 //如果是可用的, 添加到availableIndex
                 if (isAvailable) {
                     availableIndex.add(index);
+                    modded = true;
                 }
             }
             //按可用索引替换
@@ -300,7 +292,6 @@ public class processPy {
                     output = output.substring(0, replaceIndex) + replacement + output.substring(replaceIndex + target.length());
                 }
             }
-
             return output;
         }
         else {
@@ -332,6 +323,7 @@ public class processPy {
             }
             outputLine = outputLine + ")" + line.substring(line.indexOf(")") + 1);
             line = outputLine;
+            modded = true;
         }
         return line;
     }
@@ -339,10 +331,11 @@ public class processPy {
     public String repMeth(String target, String replacement, String line){
         if (line.contains(target)){
             line = line.substring(0, line.indexOf(target)) + replacement + line.substring(line.indexOf(target) + target.length());
+            modded = true;
         }
         return line;
     }
-    //替换连续+=格式的方法
+    //替换=格式的方法
     public String repContinuous(String line){
         System.out.println("开始转换连续运算符");
         String sketchLine = line;
@@ -372,13 +365,96 @@ public class processPy {
                 System.out.println("前置运算符：" + operator);
                 System.out.println("后置运算符：" + infromOpera);
                 if (infromOpera.equals('=')) {
-                    line = line.substring(0, index + shifter) + line.substring(index + shifter + 1);
-                    shifter--;
+                    line = line.substring(0, index + shifter) + "cspc6126" + line.substring(index + shifter + 1);
+                    shifter += 7;
+                    modded = true;
                 }
-                System.out.println(line);
+
+                else if(operator.equals('+')){
+                    String regex = "(\\w+) \\+= (.+)";
+                    Pattern pattern = Pattern.compile(regex);
+                    Matcher matcher = pattern.matcher(line);
+
+                    StringBuffer convertedCode = new StringBuffer();
+                    while (matcher.find()) {
+                        String variableName = matcher.group(1);
+                        String incrementValue = matcher.group(2);
+                        String replacement = variableName + " = " + variableName + " + " + incrementValue;
+                        matcher.appendReplacement(convertedCode, replacement);
+                    }
+                    matcher.appendTail(convertedCode);
+                    line = convertedCode.toString();
+                    modded = true;
+                }
+                else if(operator.equals('-')){
+                    String regex = "(\\w+) \\-= (.+)";
+                    Pattern pattern = Pattern.compile(regex);
+                    Matcher matcher = pattern.matcher(line);
+
+                    StringBuffer convertedCode = new StringBuffer();
+                    while (matcher.find()) {
+                        String variableName = matcher.group(1);
+                        String incrementValue = matcher.group(2);
+                        String replacement = variableName + " = " + variableName + " - " + incrementValue;
+                        matcher.appendReplacement(convertedCode, replacement);
+                    }
+                    matcher.appendTail(convertedCode);
+                    line = convertedCode.toString();
+                    modded = true;
+                }
+                else if(operator.equals('/')){
+                    String regex = "(\\w+) \\/= (.+)";
+                    Pattern pattern = Pattern.compile(regex);
+                    Matcher matcher = pattern.matcher(line);
+
+                    StringBuffer convertedCode = new StringBuffer();
+                    while (matcher.find()) {
+                        String variableName = matcher.group(1);
+                        String incrementValue = matcher.group(2);
+                        String replacement = variableName + " = " + variableName + " / " + incrementValue;
+                        matcher.appendReplacement(convertedCode, replacement);
+                    }
+                    matcher.appendTail(convertedCode);
+                    line = convertedCode.toString();
+                    modded = true;
+                }
+                else if(operator.equals('*')){
+                    String regex = "(\\w+) \\*= (.+)";
+                    Pattern pattern = Pattern.compile(regex);
+                    Matcher matcher = pattern.matcher(line);
+
+                    StringBuffer convertedCode = new StringBuffer();
+                    while (matcher.find()) {
+                        String variableName = matcher.group(1);
+                        String incrementValue = matcher.group(2);
+                        String replacement = variableName + " = " + variableName + " * " + incrementValue;
+                        matcher.appendReplacement(convertedCode, replacement);
+                    }
+                    matcher.appendTail(convertedCode);
+                    line = convertedCode.toString();
+                    modded = true;
+                }
+
+                else{
+                    line = line.substring(0, index + shifter) + "<-" + line.substring(index + shifter + 1);
+                    shifter++;
+                    modded = true;
+                }
             }
         }
         return line;
+    }
+    //将目标字符串倒置的方法
+    public String reverseString (String line){
+        ArrayList<String> reverseLiner = new ArrayList<>();
+        for (int u = 0; u < line.length(); u++){
+            reverseLiner.add(0, String.valueOf(line.charAt(u)));
+        }
+        String output = "";
+        for (String s : reverseLiner) {
+            output += s;
+        }
+        return output;
     }
     //检测是否符合闭合括号的条件
     public boolean tabSpcCheck(String line){
@@ -413,6 +489,7 @@ public class processPy {
             generate = true;
             shouldBaked = false;
             System.out.println("前方含有" + (tpc - 1) + "个空格");
+            modded = true;
         }
         return line;
     }
@@ -430,6 +507,7 @@ public class processPy {
                 shouldBaked = true;
                 line = line.substring(0, line.indexOf("while")) + condition;
             }
+            modded = true;
             isReplaceLine = true;
         }
         return line;
@@ -447,6 +525,7 @@ public class processPy {
                 condition = "FOR EACH" + condition.substring(condition.indexOf("for") + 3, condition.indexOf("in")) + "IN" + condition.substring(condition.indexOf("in") + 2);
                 line = line.substring(0, line.indexOf("for")) + condition;
             }
+            modded = true;
             isReplaceLine = true;
         }
         return line;
@@ -465,6 +544,7 @@ public class processPy {
                 shouldBaked = true;
                 line = line.substring(0, line.indexOf("if")) + condition;
             }
+            modded = true;
             isReplaceLine = true;
         }
         return line;
@@ -483,6 +563,7 @@ public class processPy {
                 shouldBaked = true;
                 line = line.substring(0, line.indexOf("elif")) + condition;
             }
+            modded = true;
             isReplaceLine = true;
         }
         return line;
@@ -493,6 +574,7 @@ public class processPy {
             String condition = line.substring(line.indexOf("else"), line.indexOf(":") + 1);
             condition = "ELSE" + condition.substring(condition.indexOf("else") + 4, condition.indexOf(":"));
             line = line.substring(0, line.indexOf("else")) + condition + line.substring(line.indexOf(":"));
+            modded = true;
             isReplaceLine = true;
         }
         return line;
@@ -503,6 +585,7 @@ public class processPy {
             String condition = line.substring(line.indexOf("def"));
             condition = "PROCEDURE" + condition.substring(condition.indexOf("def") + 3);
             line = line.substring(0, line.indexOf("def")) + condition;
+            modded = true;
             isReplaceLine = true;
         }
         return line;
@@ -513,6 +596,7 @@ public class processPy {
             String condition = line.substring(line.indexOf("class"));
             condition = "CLASS" + condition.substring(condition.indexOf("class") + 5);
             line = line.substring(0, line.indexOf("class")) + condition;
+            modded = true;
             isReplaceLine = true;
         }
         return line;
@@ -522,13 +606,8 @@ public class processPy {
         if(line.contains("return")){
             retbaked = true;
             line = line.substring(0, line.indexOf("return")) + "RETURN(" + line.substring(line.indexOf("return") + 6).trim();
+            modded = true;
         }
         return line;
     }
 }
-
-/*
-待办
-连续not出现的替换失败问题
-+=替换问题
- */
