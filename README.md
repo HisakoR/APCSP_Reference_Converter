@@ -3,8 +3,7 @@ A lite Converter use to convert python codes into APCSP reference form
 
 Source code runs in JDK8 in IntelliJ IDEA
 
-This program is still in development, please report any bug or missing replacement in discussion
-
+This program is still in development, please report any bug or missing replacement in Issues
 ## 1.DOWNLOAD
 - Download the file named with version in Releases
 
