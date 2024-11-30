@@ -12,6 +12,11 @@ public class processPy {
     private boolean shouldBaked = false;
     private boolean retbaked = false;
     private boolean modded = false;
+    /*
+    编码表
+    cspc6126<-      （还原为=）
+    cspc6086        （还原为:）
+    */
 
     //设置data数据
     public void setData(ArrayList<String> datal){
@@ -154,7 +159,9 @@ public class processPy {
                     listLine.set(deta, repLists("insert", "INSERT", listLine.get(deta)));                //替换list.insert()
                     listLine.set(deta, repLists("remove", "REMOVE", listLine.get(deta)));                //替换list.remove()
                     listLine.set(deta, repClass(listLine.get(deta), x));                                                    //替换class
+
                     listLine.set(deta, repDef(listLine.get(deta), x));                                                      //替换def
+
                     listLine.set(deta, repWhile(listLine.get(deta), x));                                                    //替换while
                     listLine.set(deta, repElif(listLine.get(deta), x));                                                     //替换elif
                     listLine.set(deta, repIf(listLine.get(deta), x));                                                       //替换if
@@ -163,6 +170,7 @@ public class processPy {
                     listLine.set(deta, repFor(listLine.get(deta), x));                                                      //替换for
                     listLine.set(deta, repMaus(line, listLine.get(deta), x));                                               //替换:
                     listLine.set(deta, repMeth("random.randint", "RANDOM", listLine.get(deta)));         //替换random.randint()
+
                     System.out.println("修改:" + modded);
                     if(modded){
                         deta -=2;
@@ -177,7 +185,9 @@ public class processPy {
                     outputLine += ")";
                     retbaked = false;
                 }
+                //还原冲突项
                 outputLine = outputLine.replaceAll("cspc6126<-", "=");
+                outputLine = outputLine.replaceAll("cspc6086", ":");
                 outputLine = outputLine + referenceLine;
                 data.set(x, outputLine);
                 System.out.println("行输出：");
@@ -270,6 +280,7 @@ public class processPy {
                 //如果是可用的, 添加到availableIndex
                 if (isAvailable) {
                     availableIndex.add(index);
+                    System.out.println("简单替换符合修改条件");
                     modded = true;
                 }
             }
@@ -323,6 +334,7 @@ public class processPy {
             }
             outputLine = outputLine + ")" + line.substring(line.indexOf(")") + 1);
             line = outputLine;
+            System.out.println("List替换符合修改条件");
             modded = true;
         }
         return line;
@@ -331,6 +343,7 @@ public class processPy {
     public String repMeth(String target, String replacement, String line){
         if (line.contains(target)){
             line = line.substring(0, line.indexOf(target)) + replacement + line.substring(line.indexOf(target) + target.length());
+            System.out.println("Meth替换符合修改条件");
             modded = true;
         }
         return line;
@@ -367,6 +380,7 @@ public class processPy {
                 if (infromOpera.equals('=')) {
                     line = line.substring(0, index + shifter) + "cspc6126" + line.substring(index + shifter + 1);
                     shifter += 7;
+                    System.out.println("连续替换符合修改条件");
                     modded = true;
                 }
 
@@ -384,6 +398,7 @@ public class processPy {
                     }
                     matcher.appendTail(convertedCode);
                     line = convertedCode.toString();
+                    System.out.println("连续替换符合修改条件");
                     modded = true;
                 }
                 else if(operator.equals('-')){
@@ -400,6 +415,7 @@ public class processPy {
                     }
                     matcher.appendTail(convertedCode);
                     line = convertedCode.toString();
+                    System.out.println("连续替换符合修改条件");
                     modded = true;
                 }
                 else if(operator.equals('/')){
@@ -416,6 +432,7 @@ public class processPy {
                     }
                     matcher.appendTail(convertedCode);
                     line = convertedCode.toString();
+                    System.out.println("连续替换符合修改条件");
                     modded = true;
                 }
                 else if(operator.equals('*')){
@@ -432,15 +449,20 @@ public class processPy {
                     }
                     matcher.appendTail(convertedCode);
                     line = convertedCode.toString();
+                    System.out.println("连续替换符合修改条件");
                     modded = true;
                 }
 
                 else{
                     line = line.substring(0, index + shifter) + "<-" + line.substring(index + shifter + 1);
                     shifter++;
+                    System.out.println("连续替换符合修改条件");
                     modded = true;
                 }
             }
+        }
+        else{
+            System.out.println("无等号，结束");
         }
         return line;
     }
@@ -468,14 +490,17 @@ public class processPy {
         return testSpc <= tabSpc.get(tabSpc.size() - 1).getSpaces();
     }
     //替换行内冒号的方法
-    public String repMaus(String fullLine, String line, int lineNum){//需要判断整行
-        System.out.println();
+    public String repMaus(String fullLine, String line, int lineNum){
+        System.out.println("\n====花括号添加开始====");
         if(line.contains(":") && isReplaceLine){
+            System.out.println("检测到冒号且不是添加行");
             if (shouldBaked){
                 line = line.substring(0, line.length() - 1) + "){";
+                System.out.println("添加){");
             }
             else{
                 line = line.substring(0, line.length() - 1) + "{";
+                System.out.println("添加{");
             }
             int tpc = 0;
             for(int x = 0; x < fullLine.length(); x++){
@@ -489,8 +514,14 @@ public class processPy {
             generate = true;
             shouldBaked = false;
             System.out.println("前方含有" + (tpc - 1) + "个空格");
+            line = line.replaceAll(":", "cspc6086");
+            System.out.println("冒号替换符合修改条件");
             modded = true;
         }
+        else {
+            System.out.println("不符合添加条件");
+        }
+        System.out.println("====花括号添加结束====");
         return line;
     }
     //替换while的方法
@@ -507,6 +538,7 @@ public class processPy {
                 shouldBaked = true;
                 line = line.substring(0, line.indexOf("while")) + condition;
             }
+            System.out.println("WHILE替换符合修改条件");
             modded = true;
             isReplaceLine = true;
         }
@@ -525,6 +557,7 @@ public class processPy {
                 condition = "FOR EACH" + condition.substring(condition.indexOf("for") + 3, condition.indexOf("in")) + "IN" + condition.substring(condition.indexOf("in") + 2);
                 line = line.substring(0, line.indexOf("for")) + condition;
             }
+            System.out.println("FOR替换符合修改条件");
             modded = true;
             isReplaceLine = true;
         }
@@ -544,6 +577,7 @@ public class processPy {
                 shouldBaked = true;
                 line = line.substring(0, line.indexOf("if")) + condition;
             }
+            System.out.println("IF替换符合修改条件");
             modded = true;
             isReplaceLine = true;
         }
@@ -563,6 +597,7 @@ public class processPy {
                 shouldBaked = true;
                 line = line.substring(0, line.indexOf("elif")) + condition;
             }
+            System.out.println("ELIF替换符合修改条件");
             modded = true;
             isReplaceLine = true;
         }
@@ -574,6 +609,7 @@ public class processPy {
             String condition = line.substring(line.indexOf("else"), line.indexOf(":") + 1);
             condition = "ELSE" + condition.substring(condition.indexOf("else") + 4, condition.indexOf(":"));
             line = line.substring(0, line.indexOf("else")) + condition + line.substring(line.indexOf(":"));
+            System.out.println("ELSE替换符合修改条件");
             modded = true;
             isReplaceLine = true;
         }
@@ -581,13 +617,19 @@ public class processPy {
     }
     //替换def的方法
     public String repDef(String line, int lineNum){
+        System.out.println("\n====方法替换开始====");
         if (line.contains("def")){
             String condition = line.substring(line.indexOf("def"));
             condition = "PROCEDURE" + condition.substring(condition.indexOf("def") + 3);
             line = line.substring(0, line.indexOf("def")) + condition;
+            System.out.println("DEF替换符合修改条件");
             modded = true;
             isReplaceLine = true;
         }
+        else{
+            System.out.println("未检测到def");
+        }
+        System.out.println("====方法替换结束====");
         return line;
     }
     //替换def的方法
@@ -596,6 +638,7 @@ public class processPy {
             String condition = line.substring(line.indexOf("class"));
             condition = "CLASS" + condition.substring(condition.indexOf("class") + 5);
             line = line.substring(0, line.indexOf("class")) + condition;
+            System.out.println("CLASS替换符合修改条件");
             modded = true;
             isReplaceLine = true;
         }
@@ -606,6 +649,7 @@ public class processPy {
         if(line.contains("return")){
             retbaked = true;
             line = line.substring(0, line.indexOf("return")) + "RETURN(" + line.substring(line.indexOf("return") + 6).trim();
+            System.out.println("RETURN替换符合修改条件");
             modded = true;
         }
         return line;
