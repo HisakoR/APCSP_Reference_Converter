@@ -12,6 +12,7 @@ public class processPy {
     private boolean shouldBaked = false;
     private boolean retbaked = false;
     private boolean modded = false;
+
     /*
     编码表
     cspc6126<-      （还原为=）
@@ -342,9 +343,24 @@ public class processPy {
     //替换方法的方法
     public String repMeth(String target, String replacement, String line){
         if (line.contains(target)){
-            line = line.substring(0, line.indexOf(target)) + replacement + line.substring(line.indexOf(target) + target.length());
-            System.out.println("Meth替换符合修改条件");
-            modded = true;
+            if((line.indexOf(target) == 0)){
+                System.out.println("目标方法后字符:" + line.charAt(line.indexOf(target) + target.length() - 1));
+                if(line.charAt(line.indexOf(target) + target.length()) == '('){
+                    line = line.substring(0, line.indexOf(target)) + replacement + line.substring(line.indexOf(target) + target.length());
+                    System.out.println("Meth替换符合修改条件");
+                    modded = true;
+                }
+            }
+            else{
+                if(line.charAt(line.indexOf(target) - 1) == ' ' || line.charAt(line.indexOf(target) - 1) == '('){
+                    System.out.println("目标方法后字符:" + line.charAt(line.indexOf(target) + target.length() - 1));
+                    if(line.charAt(line.indexOf(target) + target.length()) == '('){
+                        line = line.substring(0, line.indexOf(target)) + replacement + line.substring(line.indexOf(target) + target.length());
+                        System.out.println("Meth替换符合修改条件");
+                        modded = true;
+                    }
+                }
+            }
         }
         return line;
     }

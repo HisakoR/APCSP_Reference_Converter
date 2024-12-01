@@ -57,6 +57,8 @@ public class controller {
     private Text originalFile;
     @FXML
     private Text modeText;
+    @FXML
+    private Button closeComp;
 
     public static void setStage(Stage primStage){
         stage = primStage;
@@ -152,8 +154,8 @@ public class controller {
         return loader;
     }
     //弹出窗口的方法
-    public FXMLLoader dropWindow(String guiPart, String guiName){
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(guiPart + ".fxml"));
+    public static FXMLLoader dropWindow(String guiPart, String guiName){
+        FXMLLoader loader = new FXMLLoader(controller.class.getResource(guiPart + ".fxml"));
         try {
             Stage newWindow = new Stage();
             newWindow.initModality(Modality.APPLICATION_MODAL);
@@ -207,6 +209,12 @@ public class controller {
     @FXML
     public void closeWindow(){
         Stage stage = (Stage) setCancel.getScene().getWindow();
+        stage.close();
+    }
+    //关闭完成界面的方法
+    @FXML
+    public void closeComplete(){
+        Stage stage = (Stage) closeComp.getScene().getWindow();
         stage.close();
     }
     //退出程序的方法

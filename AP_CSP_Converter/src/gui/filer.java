@@ -67,6 +67,7 @@ public class filer {
                 bw.write(line);
                 bw.newLine();
             }
+            //controller.dropWindow("complete", "complete");
         }
         catch (IOException e) {
             e.printStackTrace();
