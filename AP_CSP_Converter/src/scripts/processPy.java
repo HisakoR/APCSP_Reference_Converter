@@ -187,7 +187,7 @@ public class processPy {
                     retbaked = false;
                 }
                 //还原冲突项
-                outputLine = outputLine.replaceAll("cspc6126<-", "=");
+                outputLine = outputLine.replaceAll("cspc6126←", "=");
                 outputLine = outputLine.replaceAll("cspc6086", ":");
                 outputLine = outputLine + referenceLine;
                 data.set(x, outputLine);
@@ -470,7 +470,7 @@ public class processPy {
                 }
 
                 else{
-                    line = line.substring(0, index + shifter) + "<-" + line.substring(index + shifter + 1);
+                    line = line.substring(0, index + shifter) + "←" + line.substring(index + shifter + 1);
                     shifter++;
                     System.out.println("连续替换符合修改条件");
                     modded = true;
