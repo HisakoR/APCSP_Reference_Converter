@@ -1,5 +1,5 @@
-# Nan's APCSP Reference Converter
-A lite Converter use to convert python codes into APCSP reference form
+# Nan's APCSP Pseudocode Converter
+A lite Converter use to convert python codes into APCSP Pseudocode form
 
 Source code runs in JDK8 in IntelliJ IDEA
 
@@ -13,7 +13,7 @@ This program is still in development, please report any bug or missing replaceme
 
 ## 2.FEATURES
 
-- Replace common expressions in python into APCSP reference form
+- Replace common expressions in python into APCSP Pseudocode form
 
 - Automatically skip the contents between " " and ''' ''' or after #
 
