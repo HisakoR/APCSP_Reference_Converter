@@ -156,13 +156,9 @@ public class processPy {
 
                     listLine.set(deta, repContinuous(listLine.get(deta)));
                     listLine.set(deta, repMeth("len", "LENGTH", listLine.get(deta)));                    //替换len()
-                    listLine.set(deta, repLists("append", "APPEND", listLine.get(deta)));                //替换list.append()
-                    listLine.set(deta, repLists("insert", "INSERT", listLine.get(deta)));                //替换list.insert()
-                    listLine.set(deta, repLists("remove", "REMOVE", listLine.get(deta)));                //替换list.remove()
+                    listLine.set(deta, repLists(listLine.get(deta)));                                                       //替换list.append()
                     listLine.set(deta, repClass(listLine.get(deta), x));                                                    //替换class
-
                     listLine.set(deta, repDef(listLine.get(deta), x));                                                      //替换def
-
                     listLine.set(deta, repWhile(listLine.get(deta), x));                                                    //替换while
                     listLine.set(deta, repElif(listLine.get(deta), x));                                                     //替换elif
                     listLine.set(deta, repIf(listLine.get(deta), x));                                                       //替换if
@@ -187,7 +183,7 @@ public class processPy {
                     retbaked = false;
                 }
                 //还原冲突项
-                outputLine = outputLine.replaceAll("cspc6126←", "=");
+                outputLine = outputLine.replaceAll("cspc6126", "=");
                 outputLine = outputLine.replaceAll("cspc6086", ":");
                 outputLine = outputLine + referenceLine;
                 data.set(x, outputLine);
@@ -311,33 +307,54 @@ public class processPy {
         }
     }
     //替换list方法集合的方法
-    public String repLists(String target, String replacement, String line){
-        if (line.contains(target)){
-            int spacInfront = 0;
-            for (int o = 0; o < line.length(); o++){
-                if (line.charAt(o) != ' '){
-                    break;
-                }
-                spacInfront++;
+    public String repLists(String line){
+        // 1. 检测 "variable1.append(variable2)"
+        Pattern appendPattern = Pattern.compile("(\\w+)\\.append\$(\\w+)\$");
+        Matcher appendMatcher = appendPattern.matcher(line);
+        if (appendMatcher.find()) {
+            String variable1 = appendMatcher.group(1);
+            String variable2 = appendMatcher.group(2);
+            line = line.replace(appendMatcher.group(0), "APPEND(" + variable1 + ", " + variable2 + ")");
+        } else {
+            // 检测 "variable1.append("
+            appendPattern = Pattern.compile("(\\w+)\\.append\$(?!\\w+)");
+            appendMatcher = appendPattern.matcher(line);
+            if (appendMatcher.find()) {
+                String variable1 = appendMatcher.group(1);
+                line = line.replace(appendMatcher.group(0), "APPEND(" + variable1 + ", ");
             }
-
-            String listName = line.substring(spacInfront, line.indexOf(target) - 1);
-
-            String[] containment = line.substring(line.indexOf("(") + 1, line.indexOf(")")).split(",");
-            String outputLine = "";
-            //需要改进
-            for(int w = 0; w < spacInfront; w++){
-                outputLine = outputLine + " ";
-            }
-            outputLine = outputLine + replacement + "(" + listName;
-            for (String s : containment) {
-                outputLine = outputLine + ", " + s.trim();
-            }
-            outputLine = outputLine + ")" + line.substring(line.indexOf(")") + 1);
-            line = outputLine;
-            System.out.println("List替换符合修改条件");
-            modded = true;
         }
+
+        // 2. 检测 "variable1.insert(value, variable2)"
+        Pattern insertPattern = Pattern.compile("(\\w+)\\.insert\$(\\w+), (\\w+)\$");
+        Matcher insertMatcher = insertPattern.matcher(line);
+        if (insertMatcher.find()) {
+            String variable1 = insertMatcher.group(1);
+            String value = insertMatcher.group(2);
+            String variable2 = insertMatcher.group(3);
+            line = line.replace(insertMatcher.group(0), "INSERT(" + variable1 + ", " + value + ", " + variable2 + ")");
+        } else {
+            // 检测 "variable1.insert(value,"
+            insertPattern = Pattern.compile("(\\w+)\\.insert\$(\\w+), (?!\\w+)");
+            insertMatcher = insertPattern.matcher(line);
+            if (insertMatcher.find()) {
+                String variable1 = insertMatcher.group(1);
+                String value = insertMatcher.group(2);
+                line = line.replace(insertMatcher.group(0), "INSERT(" + variable1 + ", " + value + ", ");
+            }
+        }
+
+        // 3. 检测 "variable1.remove(value)"
+        Pattern removePattern = Pattern.compile("(\\w+)\\.remove$(\\w+)\$");
+        Matcher removeMatcher = removePattern.matcher(line);
+        if (removeMatcher.find()) {
+            String variable1 = removeMatcher.group(1);
+            String value = removeMatcher.group(2);
+            line = line.replace(removeMatcher.group(0), "REMOVE(" + variable1 + ", " + value + ")");
+        }
+
+        return line;
+        //添加modded
         return line;
     }
     //替换方法的方法
@@ -366,121 +383,34 @@ public class processPy {
     }
     //替换=格式的方法
     public String repContinuous(String line){
-        System.out.println("开始转换连续运算符");
-        String sketchLine = line;
-        if(line.contains("=")){
-            ArrayList<Integer> indexes = new ArrayList<>();
-            for (int q = 0; q < line.length(); q++){
-                if (!sketchLine.contains("=")){
-                    System.out.println("已无等号");
-                    break;
-                }
-                else {
-                    if (indexes.isEmpty()){
-                        indexes.add(sketchLine.indexOf("="));
-                    }
-                    else{
-                        indexes.add(sketchLine.indexOf("=") + indexes.get(indexes.size() - 1) + 1);
-                    }
-                    sketchLine = line.substring(indexes.get(indexes.size() - 1) + 1);
-                    System.out.println("等号位置:" + indexes.get(indexes.size() - 1));
-                    System.out.println("当前行：" + sketchLine);
-                }
-            }
-            int shifter = 0;
-            for (Integer index : indexes) {
-                Character operator = line.charAt(index + shifter - 1);
-                Character infromOpera = line.charAt(index + shifter + 1);
-                System.out.println("前置运算符：" + operator);
-                System.out.println("后置运算符：" + infromOpera);
-                if (infromOpera.equals('=')) {
-                    line = line.substring(0, index + shifter) + "cspc6126" + line.substring(index + shifter + 1);
-                    shifter += 7;
-                    System.out.println("连续替换符合修改条件");
-                    modded = true;
-                }
-
-                else if(operator.equals('+')){
-                    String regex = "(\\w+) \\+= (.+)";
-                    Pattern pattern = Pattern.compile(regex);
-                    Matcher matcher = pattern.matcher(line);
-
-                    StringBuffer convertedCode = new StringBuffer();
-                    while (matcher.find()) {
-                        String variableName = matcher.group(1);
-                        String incrementValue = matcher.group(2);
-                        String replacement = variableName + " = " + variableName + " + " + incrementValue;
-                        matcher.appendReplacement(convertedCode, replacement);
-                    }
-                    matcher.appendTail(convertedCode);
-                    line = convertedCode.toString();
-                    System.out.println("连续替换符合修改条件");
-                    modded = true;
-                }
-                else if(operator.equals('-')){
-                    String regex = "(\\w+) \\-= (.+)";
-                    Pattern pattern = Pattern.compile(regex);
-                    Matcher matcher = pattern.matcher(line);
-
-                    StringBuffer convertedCode = new StringBuffer();
-                    while (matcher.find()) {
-                        String variableName = matcher.group(1);
-                        String incrementValue = matcher.group(2);
-                        String replacement = variableName + " = " + variableName + " - " + incrementValue;
-                        matcher.appendReplacement(convertedCode, replacement);
-                    }
-                    matcher.appendTail(convertedCode);
-                    line = convertedCode.toString();
-                    System.out.println("连续替换符合修改条件");
-                    modded = true;
-                }
-                else if(operator.equals('/')){
-                    String regex = "(\\w+) \\/= (.+)";
-                    Pattern pattern = Pattern.compile(regex);
-                    Matcher matcher = pattern.matcher(line);
-
-                    StringBuffer convertedCode = new StringBuffer();
-                    while (matcher.find()) {
-                        String variableName = matcher.group(1);
-                        String incrementValue = matcher.group(2);
-                        String replacement = variableName + " = " + variableName + " / " + incrementValue;
-                        matcher.appendReplacement(convertedCode, replacement);
-                    }
-                    matcher.appendTail(convertedCode);
-                    line = convertedCode.toString();
-                    System.out.println("连续替换符合修改条件");
-                    modded = true;
-                }
-                else if(operator.equals('*')){
-                    String regex = "(\\w+) \\*= (.+)";
-                    Pattern pattern = Pattern.compile(regex);
-                    Matcher matcher = pattern.matcher(line);
-
-                    StringBuffer convertedCode = new StringBuffer();
-                    while (matcher.find()) {
-                        String variableName = matcher.group(1);
-                        String incrementValue = matcher.group(2);
-                        String replacement = variableName + " = " + variableName + " * " + incrementValue;
-                        matcher.appendReplacement(convertedCode, replacement);
-                    }
-                    matcher.appendTail(convertedCode);
-                    line = convertedCode.toString();
-                    System.out.println("连续替换符合修改条件");
-                    modded = true;
-                }
-
-                else{
-                    line = line.substring(0, index + shifter) + "←" + line.substring(index + shifter + 1);
-                    shifter++;
-                    System.out.println("连续替换符合修改条件");
-                    modded = true;
-                }
-            }
+        if (!line.contains("=")) {
+            return line;
         }
-        else{
-            System.out.println("无等号，结束");
-        }
+        int frontSpaces = getSpaceFront(line);
+        int hindSpaces = getSpaceHind(line);
+        String trimmedLine = line.trim();
+        trimmedLine = trimmedLine.replace("==", "cspc6126");
+        trimmedLine = replaceOperators(trimmedLine);
+        trimmedLine = trimmedLine.replace("=", "←");
+        modded = true;
+        return addSpaces(frontSpaces) + trimmedLine + addSpaces(hindSpaces);
+    }
+    public static String replaceOperators(String line) {
+        //匹配变量运算符及其值
+        String regexWithValue = "(\\w+)\\s*([+\\-*/%])=\\s*(\\w+)";
+        line = line.replaceAll(regexWithValue, "$1 = $1 $2 $3");
+        //匹配变量运算符但未提供值
+        String regexWithoutValue = "(\\w+)\\s*([+\\-*/%])=\\s*";
+        line = line.replaceAll(regexWithoutValue, "$1 = $1 $2 ");
         return line;
+    }
+    //空格生成器
+    public static String addSpaces(int count) {
+        String spaces = "";
+        for (int i = 0; i < count; i++) {
+            spaces += " ";
+        }
+        return spaces;
     }
     //将目标字符串倒置的方法
     public String reverseString (String line){
@@ -505,31 +435,53 @@ public class processPy {
         }
         return testSpc <= tabSpc.get(tabSpc.size() - 1).getSpaces();
     }
+    //获取行前空格的方法
+    public int getSpaceFront(String line){
+        int cal = 0;
+        for (int c = 0; c < line.length(); c++){
+            if (line.charAt(c) != ' '){
+                break;
+            }
+            cal++;
+        }
+        return cal;
+    }
+    //获取行后空格的方法
+    public int getSpaceHind(String line){
+        int cal = 0;
+        for (int c = 1; c < line.length(); c++){
+            if (line.charAt(line.length() - c) != ' '){
+                break;
+            }
+            cal++;
+        }
+        return cal;
+    }
     //替换行内冒号的方法
     public String repMaus(String fullLine, String line, int lineNum){
         System.out.println("\n====花括号添加开始====");
         if(line.contains(":") && isReplaceLine){
+            String sketchLine = line;
             System.out.println("检测到冒号且不是添加行");
             if (shouldBaked){
-                line = line.substring(0, line.length() - 1) + "){";
+                line = line.trim().substring(0, line.trim().length() - 1) + "){";
                 System.out.println("添加){");
             }
             else{
-                line = line.substring(0, line.length() - 1) + "{";
+                line = line.trim().substring(0, line.trim().length() - 1) + "{";
                 System.out.println("添加{");
             }
-            int tpc = 0;
-            for(int x = 0; x < fullLine.length(); x++){
-                if(fullLine.charAt(x) != ' '){
-                    break;
-                }
-                tpc += 1;
+
+            for (int l = 0; l < getSpaceFront(sketchLine); l++){
+                line = " " + line;
             }
-            tpc += 1;
-            tabSpc.add(new bracket(lineNum, tpc));
+            for (int l = 0; l < getSpaceHind(sketchLine); l++){
+                line += " ";
+            }
+            tabSpc.add(new bracket(lineNum, getSpaceFront(fullLine) + 1));
+            System.out.println("待添加}列表空格需求新增: " + tabSpc.get(tabSpc.size() - 1).getSpaces());
             generate = true;
             shouldBaked = false;
-            System.out.println("前方含有" + (tpc - 1) + "个空格");
             line = line.replaceAll(":", "cspc6086");
             System.out.println("冒号替换符合修改条件");
             modded = true;
