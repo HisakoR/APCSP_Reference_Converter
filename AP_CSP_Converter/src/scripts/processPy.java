@@ -308,54 +308,22 @@ public class processPy {
     }
     //替换list方法集合的方法
     public String repLists(String line){
-        // 1. 检测 "variable1.append(variable2)"
-        Pattern appendPattern = Pattern.compile("(\\w+)\\.append\$(\\w+)\$");
-        Matcher appendMatcher = appendPattern.matcher(line);
-        if (appendMatcher.find()) {
-            String variable1 = appendMatcher.group(1);
-            String variable2 = appendMatcher.group(2);
-            line = line.replace(appendMatcher.group(0), "APPEND(" + variable1 + ", " + variable2 + ")");
-        } else {
-            // 检测 "variable1.append("
-            appendPattern = Pattern.compile("(\\w+)\\.append\$(?!\\w+)");
-            appendMatcher = appendPattern.matcher(line);
-            if (appendMatcher.find()) {
-                String variable1 = appendMatcher.group(1);
-                line = line.replace(appendMatcher.group(0), "APPEND(" + variable1 + ", ");
-            }
+        if (!(line.contains(".append")||line.contains(".insert")||line.contains(".remove"))) {
+            return line;
         }
-
-        // 2. 检测 "variable1.insert(value, variable2)"
-        Pattern insertPattern = Pattern.compile("(\\w+)\\.insert\$(\\w+), (\\w+)\$");
-        Matcher insertMatcher = insertPattern.matcher(line);
-        if (insertMatcher.find()) {
-            String variable1 = insertMatcher.group(1);
-            String value = insertMatcher.group(2);
-            String variable2 = insertMatcher.group(3);
-            line = line.replace(insertMatcher.group(0), "INSERT(" + variable1 + ", " + value + ", " + variable2 + ")");
-        } else {
-            // 检测 "variable1.insert(value,"
-            insertPattern = Pattern.compile("(\\w+)\\.insert\$(\\w+), (?!\\w+)");
-            insertMatcher = insertPattern.matcher(line);
-            if (insertMatcher.find()) {
-                String variable1 = insertMatcher.group(1);
-                String value = insertMatcher.group(2);
-                line = line.replace(insertMatcher.group(0), "INSERT(" + variable1 + ", " + value + ", ");
-            }
-        }
-
-        // 3. 检测 "variable1.remove(value)"
-        Pattern removePattern = Pattern.compile("(\\w+)\\.remove$(\\w+)\$");
-        Matcher removeMatcher = removePattern.matcher(line);
-        if (removeMatcher.find()) {
-            String variable1 = removeMatcher.group(1);
-            String value = removeMatcher.group(2);
-            line = line.replace(removeMatcher.group(0), "REMOVE(" + variable1 + ", " + value + ")");
-        }
-
+        String appendPattern = "(\\w+)\\.append\\(";
+        String insertPattern = "(\\w+)\\.insert\\(";
+        String removePattern = "(\\w+)\\.remove\\(";
+        line = replaceUsingPattern(line, appendPattern, "APPEND($1, ");
+        line = replaceUsingPattern(line, insertPattern, "INSERT($1, ");
+        line = replaceUsingPattern(line, removePattern, "REMOVE($1, ");
+        modded = true;
         return line;
-        //添加modded
-        return line;
+    }
+    public String replaceUsingPattern(String line, String pattern, String replacement) {
+        Pattern regex = Pattern.compile(pattern);
+        Matcher matcher = regex.matcher(line);
+        return matcher.replaceAll(replacement);
     }
     //替换方法的方法
     public String repMeth(String target, String replacement, String line){
