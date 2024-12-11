@@ -512,7 +512,7 @@ public class processPy {
         }
         return line;
     }
-    //替换for的方法  //变量名可能被检测*恶性
+    //替换for的方法
     public String repFor(String line, int lineNum){
         if (variableTest(line, "for")){
             if (line.contains(":")){

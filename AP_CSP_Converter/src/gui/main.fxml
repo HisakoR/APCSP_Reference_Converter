@@ -12,26 +12,26 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller">
    <children>
-      <ImageView fitHeight="415.0" fitWidth="421.0" layoutX="192.0" layoutY="-7.0" opacity="0.05" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="599.0" fitWidth="630.0" layoutX="192.0" layoutY="-7.0" opacity="0.05" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@logor.png" />
          </image>
       </ImageView>
-      <Text fx:id="texter" fill="#0000006b" layoutX="30.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Target path:" wrappingWidth="212.0">
+      <Text fx:id="texter" fill="#0000006b" layoutX="30.0" layoutY="228.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Target path:" wrappingWidth="212.0">
          <font>
             <Font name="Segoe UI" size="22.0" />
          </font>
       </Text>
-      <Button alignment="CENTER" layoutX="30.0" layoutY="259.0" mnemonicParsing="false" onMouseClicked="#getFileInfo" prefHeight="35.0" prefWidth="135.0" text="Convert !" textFill="#00000098">
+      <Button alignment="CENTER" layoutX="30.0" layoutY="287.0" mnemonicParsing="false" onMouseClicked="#getFileInfo" prefHeight="35.0" prefWidth="135.0" text="Convert !" textFill="#00000098">
          <font>
             <Font name="Segoe UI Bold" size="16.0" />
          </font></Button>
-      <TextField fx:id="filePath" layoutX="30.0" layoutY="212.0" prefHeight="34.0" prefWidth="539.0" promptText="Enter the path of the file to be converted">
+      <TextField fx:id="filePath" layoutX="30.0" layoutY="240.0" prefHeight="34.0" prefWidth="539.0" promptText="Enter the path of the file to be converted">
          <font>
             <Font name="Segoe UI" size="16.0" />
          </font>
       </TextField>
-      <MenuButton fx:id="langSelect" alignment="CENTER" layoutX="30.0" layoutY="132.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="135.0" text="choose" textFill="#0000009a">
+      <MenuButton fx:id="langSelect" alignment="CENTER" layoutX="30.0" layoutY="166.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="135.0" text="choose" textFill="#0000009a">
         <items>
           <MenuItem mnemonicParsing="false" onAction="#setLangPY" text="PYTHON" />
         </items>
@@ -39,17 +39,17 @@
             <Font name="Segoe UI Bold" size="16.0" />
          </font>
       </MenuButton>
-      <Text fill="#00000069" layoutX="30.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Programming language:">
+      <Text fill="#00000069" layoutX="30.0" layoutY="153.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Programming language:">
          <font>
             <Font name="Segoe UI" size="22.0" />
          </font>
       </Text>
-      <Text fill="#0000009a" layoutX="30.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="AP CSP Converter 0.1">
+      <Text fill="#0000009a" layoutX="30.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="APCSP Pseudocode">
          <font>
             <Font name="Segoe UI Bold" size="42.0" />
          </font>
       </Text>
-      <Text fx:id="outputTex" fill="#0000004d" layoutX="28.0" layoutY="337.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" ">
+      <Text fx:id="outputTex" fill="#0000004d" layoutX="30.0" layoutY="350.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" ">
          <font>
             <Font name="Segoe UI Italic" size="17.0" />
          </font>
@@ -69,15 +69,15 @@
             <Font name="Segoe UI" size="13.0" />
          </font>
       </Text>
-      <Button fx:id="getTargetFile" layoutX="532.0" layoutY="212.0" mnemonicParsing="false" onMouseClicked="#setGetTargetFile" prefHeight="34.0" prefWidth="38.0" text="..." />
-      <Text fill="#0000006b" layoutX="208.0" layoutY="273.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please ensure the code is compilable no shadows build-in name" wrappingWidth="278.0">
+      <Button fx:id="getTargetFile" layoutX="532.0" layoutY="240.0" mnemonicParsing="false" onMouseClicked="#setGetTargetFile" prefHeight="34.0" prefWidth="38.0" text="..." />
+      <Text fill="#0000003e" layoutX="242.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="indev 0.1.4" wrappingWidth="73.0">
          <font>
-            <Font name="Segoe UI Italic" size="17.0" />
+            <Font name="Segoe UI Bold" size="13.0" />
          </font>
       </Text>
-      <Text fill="#868686" layoutX="181.0" layoutY="292.0" strokeType="OUTSIDE" strokeWidth="0.0" text="!">
+      <Text fill="#0000009a" layoutX="30.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Converter">
          <font>
-            <Font name="Segoe UI" size="40.0" />
+            <Font name="Segoe UI Bold" size="42.0" />
          </font>
       </Text>
    </children>

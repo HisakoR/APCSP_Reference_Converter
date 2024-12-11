@@ -56,8 +56,6 @@ public class controller {
     @FXML
     private Text originalFile;
     @FXML
-    private Text modeText;
-    @FXML
     private Button closeComp;
 
     public static void setStage(Stage primStage){
@@ -195,7 +193,6 @@ public class controller {
         File file = new File(reletive);
         finalSavingPath = file.getAbsolutePath();
         fileWilling.setText(finalSavingPath);
-        modeText.setText("TYPE | " + mode.toUpperCase());
     }
     //显示保存界面的方法
     @FXML
