@@ -306,6 +306,7 @@ public class processPy {
             return output;
         }
     }
+    
     //替换list方法集合的方法
     public String repLists(String line){
         if (!(line.contains(".append")||line.contains(".insert")||line.contains(".remove"))) {
@@ -327,7 +328,7 @@ public class processPy {
     }
     //替换方法的方法
     public String repMeth(String target, String replacement, String line){
-        if (line.contains(target)){
+        if (variableTest(line, target)){
             if((line.indexOf(target) == 0)){
                 System.out.println("目标方法后字符:" + line.charAt(line.indexOf(target) + target.length() - 1));
                 if(line.charAt(line.indexOf(target) + target.length()) == '('){
@@ -425,6 +426,37 @@ public class processPy {
         }
         return cal;
     }
+    //检测目标是否为变量名
+    public boolean variableTest(String line, String target){
+        boolean inFrontTest = false;
+        boolean afterTest = false;
+        if (line.contains(target)){
+
+            if (line.indexOf(target) != 0){
+                char infrom = line.charAt(line.indexOf(target) - 1);
+                if (infrom == ' ' || infrom == '(' || infrom == ',' || infrom == ')'){
+                    inFrontTest = true;
+                }
+                if (line.indexOf(target) + target.length() != line.length()){
+                    char afterom = line.charAt(line.indexOf(target) + target.length());
+                    if (afterom == ' ' || afterom == '(' || afterom == ',' || afterom == ')'|| afterom == ':'){
+                        afterTest = true;
+                    }
+                }
+            }
+
+            else{
+                inFrontTest = true;
+                if (line.indexOf(target) + target.length() != line.length()){
+                    char afterom = line.charAt(line.indexOf(target) + target.length());
+                    if (afterom == ' ' || afterom == '(' || afterom == ',' || afterom == ')'|| afterom == ':'){
+                        afterTest = true;
+                    }
+                }
+            }
+        }
+        return (inFrontTest && afterTest);
+    }
     //替换行内冒号的方法
     public String repMaus(String fullLine, String line, int lineNum){
         System.out.println("\n====花括号添加开始====");
@@ -462,7 +494,7 @@ public class processPy {
     }
     //替换while的方法
     public String repWhile(String line, int lineNum){
-        if (line.contains("while")){
+        if (variableTest(line, "while")){
             if (line.contains(":")){
                 String condition = line.substring(line.indexOf("while"), line.indexOf(":") + 1);
                 condition = "REPEAT UNTIL(NOT " + condition.substring(condition.indexOf("while") + 5, condition.indexOf(":")).trim() + ")";
@@ -480,9 +512,9 @@ public class processPy {
         }
         return line;
     }
-    //替换for的方法
+    //替换for的方法  //变量名可能被检测*恶性
     public String repFor(String line, int lineNum){
-        if (line.contains("for")){
+        if (variableTest(line, "for")){
             if (line.contains(":")){
                 String condition = line.substring(line.indexOf("for"), line.indexOf(":") + 1);
                 condition = "FOR EACH" + condition.substring(condition.indexOf("for") + 3, condition.indexOf("in")) + "IN" + condition.substring(condition.indexOf("in") + 2, condition.indexOf(":"));
@@ -501,7 +533,7 @@ public class processPy {
     }
     //替换if的方法
     public String repIf(String line, int lineNum){
-        if (line.contains("if")){
+        if (variableTest(line, "if")){
             if (line.contains(":")){
                 String condition = line.substring(line.indexOf("if"), line.indexOf(":") + 1);
                 condition = "IF(" + condition.substring(condition.indexOf("if") + 2, condition.indexOf(":")).trim() + ")";
@@ -521,7 +553,7 @@ public class processPy {
     }
     //替换else if的方法
     public String repElif(String line, int lineNum){
-        if (line.contains("elif")){
+        if (variableTest(line, "elif")){
             if (line.contains(":")){
                 String condition = line.substring(line.indexOf("elif"), line.indexOf(":") + 1);
                 condition = "ELSE IF(" + condition.substring(condition.indexOf("elif") + 4, condition.indexOf(":")).trim() + ")";
@@ -541,7 +573,7 @@ public class processPy {
     }
     //替换else的方法
     public String repELSE(String line, int lineNum){
-        if (line.contains("else")){
+        if (variableTest(line, "else")){
             String condition = line.substring(line.indexOf("else"), line.indexOf(":") + 1);
             condition = "ELSE" + condition.substring(condition.indexOf("else") + 4, condition.indexOf(":"));
             line = line.substring(0, line.indexOf("else")) + condition + line.substring(line.indexOf(":"));
@@ -554,7 +586,7 @@ public class processPy {
     //替换def的方法
     public String repDef(String line, int lineNum){
         System.out.println("\n====方法替换开始====");
-        if (line.contains("def")){
+        if (variableTest(line, "def")){
             String condition = line.substring(line.indexOf("def"));
             condition = "PROCEDURE" + condition.substring(condition.indexOf("def") + 3);
             line = line.substring(0, line.indexOf("def")) + condition;
@@ -570,7 +602,7 @@ public class processPy {
     }
     //替换def的方法
     public String repClass(String line, int lineNum){
-        if (line.contains("class")){
+        if (variableTest(line, "class")){
             String condition = line.substring(line.indexOf("class"));
             condition = "CLASS" + condition.substring(condition.indexOf("class") + 5);
             line = line.substring(0, line.indexOf("class")) + condition;
@@ -582,7 +614,7 @@ public class processPy {
     }
     //替换return的方法
     public String repRETURN(String line){
-        if(line.contains("return")){
+        if(variableTest(line, "return")){
             retbaked = true;
             line = line.substring(0, line.indexOf("return")) + "RETURN(" + line.substring(line.indexOf("return") + 6).trim();
             System.out.println("RETURN替换符合修改条件");
