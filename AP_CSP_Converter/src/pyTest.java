@@ -1,10 +1,8 @@
-import gui.controller;
-import gui.filer;
+import scripts.filer;
 import scripts.processPy;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import static gui.controller.finalSavingPath;

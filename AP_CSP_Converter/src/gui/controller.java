@@ -14,15 +14,20 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import scripts.config;
+import scripts.filer;
 import scripts.processJav;
 import scripts.processPy;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class controller {
     //文件处理器
-    private final filer filer = new filer();
+    private final scripts.filer filer = new filer();
+    //设置法
+    private config configer = new config();
     //转译模式
     private static String mode = "";
     //最终保存路径
@@ -57,6 +62,8 @@ public class controller {
     private Text originalFile;
     @FXML
     private Button closeComp;
+    @FXML
+    private TextField defaultSaver;
 
     public static void setStage(Stage primStage){
         stage = primStage;
@@ -106,6 +113,24 @@ public class controller {
         }
     }
 
+    //设置文件夹路径的按钮
+    @FXML
+    public void setDefaultSaver(MouseEvent event){
+        String pathway = getDectory();
+        if(pathway != null){
+            defaultSaver.setText(pathway);
+        }
+    }
+    //重设设置
+    @FXML
+    public void resetConfig() throws IOException {
+        ArrayList<String> lines = new ArrayList<>();
+        lines.add("0");
+        lines.add(defaultSaver.getText());
+        filer.rewriteFile(lines, "config.txt");
+        closeWindow();
+        configer.initialize();
+    }
     //关闭保存界面的方法
     @FXML
     public void savCloseWindow(){
@@ -170,7 +195,12 @@ public class controller {
     //显示设置界面的方法
     @FXML
     public void showSetting(MouseEvent event){
-        dropWindow("setting", "Setting");
+        controller controller = dropWindow("setting", "Setting").getController();
+        controller.setDefaultSaver();
+    }
+    //设定 显示默认保存路径
+    public void setDefaultSaver(){
+        defaultSaver.setText(filer.userPath);
     }
     //显示默认保存路径的方法
     public void setPathProm(){

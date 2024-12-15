@@ -20,7 +20,7 @@
       </Text>
       <Button fx:id="applyPro" layoutX="239.0" layoutY="261.0" mnemonicParsing="false" onMouseClicked="#processing" text="Apply" />
       <Button fx:id="saveCancel" layoutX="307.0" layoutY="261.0" mnemonicParsing="false" onMouseClicked="#savCloseWindow" text="Cancel" />
-      <TextField fx:id="savePath" layoutX="145.0" layoutY="27.0" prefHeight="25.0" prefWidth="409.0" promptText="path">
+      <TextField fx:id="savePath" layoutX="145.0" layoutY="27.0" prefHeight="25.0" prefWidth="407.0" promptText="path">
          <font>
             <Font name="Segoe UI" size="13.0" />
          </font>

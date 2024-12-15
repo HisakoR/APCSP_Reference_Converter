@@ -1,4 +1,6 @@
-package gui;
+package scripts;
+
+import gui.controller;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -29,7 +31,20 @@ public class filer {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         return time.format(formatter);
     }
-
+    public void createConfig(ArrayList<String> lines) throws IOException {
+        File configer = new File("config.txt");
+        if (configer.createNewFile()){
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(configer.getPath(), true))) {
+                for (String line : lines) {
+                    bw.write(line);
+                    bw.newLine();
+                }
+            }
+            catch (Exception ignored){
+                System.out.println("文件创建失败或已存在");
+            }
+        }
+    }
     public void saveData(ArrayList<String> lines) throws IOException {
         String filePath = finalSavingPath;
         File filering = new File(filePath);
@@ -78,5 +93,17 @@ public class filer {
     }
     public void setUserPath(String newPath){
         userPath = newPath;
+    }
+    public void rewriteFile(ArrayList<String> lines, String path){
+        File file = new File(path);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path, false))) {
+            for(int x = 0; x < lines.size(); x++){
+                bw.write(lines.get(x));
+                bw.newLine();
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
