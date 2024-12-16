@@ -63,7 +63,7 @@
             <Font name="Segoe UI Bold" size="13.0" />
          </font>
       </Button>
-      <Text fill="#00000027" layoutX="29.0" layoutY="343.0" strokeType="OUTSIDE" strokeWidth="0.0" text="indev 0.1.4" wrappingWidth="80.0">
+      <Text fx:id="versionSetting" fill="#00000027" layoutX="29.0" layoutY="343.0" strokeType="OUTSIDE" strokeWidth="0.0" text="version" textAlignment="CENTER" wrappingWidth="80.0">
          <font>
             <Font name="Segoe UI Bold" size="15.0" />
          </font>

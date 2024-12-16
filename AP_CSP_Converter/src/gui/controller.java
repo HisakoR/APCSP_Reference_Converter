@@ -70,6 +70,12 @@ public class controller {
     private TextField defaultSaver;
     @FXML
     private Button returnBolcker;
+    @FXML
+    private Text versionText;
+    @FXML
+    private Text versionSetting;
+    @FXML
+    private Text mainVersion;
 
     public static void setStage(Stage primStage){
         stage = primStage;
@@ -92,8 +98,34 @@ public class controller {
             }
         }
         else{
-            dropWindow("updaterBlocker", "Announcement");
+            controller controller = dropWindow("updaterBlocker", "Announcement").getController();
+            controller.setVersionText(setVersion());
         }
+    }
+    //设定版本号
+    public String setVersion(){
+        String versionNum = "" + config.versions;
+        String texter = "";
+        if (versionNum.charAt(0) == '1'){
+            if (versionNum.charAt(1) == '0'){
+                texter += "indev ";
+            }
+            texter += versionNum.charAt(2) + "." + versionNum.charAt(3) + "." + versionNum.charAt(4);
+        }
+        else{
+            texter = "无效的版本号";
+        }
+        return texter;
+    }
+    //设定versionText
+    public void setVersionText(String line){
+        versionText.setText(line);
+    }
+    public void setVersionSetting(String line){
+        versionSetting.setText(line);
+    }
+    public void setmainVersion(String line){
+        mainVersion.setText(line);
     }
     //选择目标文件
     public String getTargeto(){
@@ -223,6 +255,7 @@ public class controller {
     public void showSetting(MouseEvent event){
         controller controller = dropWindow("setting", "Setting").getController();
         controller.setDefaultSaver();
+        controller.setVersionSetting(setVersion());
     }
     //设定 显示默认保存路径
     public void setDefaultSaver(){

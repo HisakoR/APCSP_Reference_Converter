@@ -70,7 +70,7 @@
          </font>
       </Text>
       <Button fx:id="getTargetFile" layoutX="532.0" layoutY="240.0" mnemonicParsing="false" onMouseClicked="#setGetTargetFile" prefHeight="34.0" prefWidth="38.0" text="..." />
-      <Text fill="#00000027" layoutX="238.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="indev 0.1.4" wrappingWidth="80.0">
+      <Text fx:id="mainVersion" fill="#00000027" layoutX="238.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="indev 0.1.4" wrappingWidth="80.0">
          <font>
             <Font name="Segoe UI Bold" size="15.0" />
          </font>
