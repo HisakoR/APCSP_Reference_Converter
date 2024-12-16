@@ -58,7 +58,7 @@
       </Text>
       <TextField fx:id="defaultSaver" layoutX="31.0" layoutY="188.0" prefHeight="25.0" prefWidth="511.0" text="output" />
       <Button layoutX="541.0" layoutY="188.0" mnemonicParsing="false" onMouseClicked="#setDefaultSaver" prefHeight="25.0" prefWidth="29.0" text="..." />
-      <Button layoutX="29.0" layoutY="354.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="UPDATE" textFill="#0000009a">
+      <Button layoutX="29.0" layoutY="354.0" mnemonicParsing="false" onMouseClicked="#gotoGit" prefHeight="25.0" prefWidth="80.0" text="UPDATE" textFill="#0000009a">
          <font>
             <Font name="Segoe UI Bold" size="13.0" />
          </font>

@@ -1,5 +1,6 @@
 import scripts.filer;
 import scripts.processPy;
+import scripts.updater;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,9 +9,11 @@ import java.util.Scanner;
 import static gui.controller.finalSavingPath;
 
 public class pyTest {
+    static updater updater = new updater();
     public static void main(String[]args) throws IOException {
         String[] nameList = {"standardTest", "termTest", "loopAndCondition", "termTheClassTest", "main"};
         Scanner louie = new Scanner(System.in);
+        System.out.println("版本号：" + updater.getVersionNumber());
         System.out.println("选择测试:\n[0]标准测试\n[1]MIDTERM测试\n[2]嵌套测试\n[3]MIDTERM测试（CLASS）\n[4]Jin's main\n[9]全部");
         String introo = louie.nextLine();
         int read = 11;

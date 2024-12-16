@@ -14,14 +14,16 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import scripts.config;
-import scripts.filer;
-import scripts.processJav;
-import scripts.processPy;
+import scripts.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class controller {
     //文件处理器
@@ -30,6 +32,8 @@ public class controller {
     private config configer = new config();
     //转译模式
     private static String mode = "";
+    //更新机
+    private static updater updater = new updater();
     //最终保存路径
     public static String finalSavingPath = "";
     //被读取文件的路径
@@ -64,11 +68,33 @@ public class controller {
     private Button closeComp;
     @FXML
     private TextField defaultSaver;
+    @FXML
+    private Button returnBolcker;
 
     public static void setStage(Stage primStage){
         stage = primStage;
     }
-
+    //跳转到github官方页面
+    @FXML
+    public void gotoGit(MouseEvent event){
+        if(config.versions < updater.getVersionNumber()){
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                try {
+                    URI uri = new URI("https://github.com/HisakoR/Nans_APCSP_Pseudocode_Converter/releases");
+                    desktop.browse(uri);
+                }
+                catch (Exception ignored) {
+                }
+            }
+            else {
+                System.out.println("无法打开浏览器");
+            }
+        }
+        else{
+            dropWindow("updaterBlocker", "Announcement");
+        }
+    }
     //选择目标文件
     public String getTargeto(){
         FileChooser fileChooser = new FileChooser();
@@ -242,6 +268,12 @@ public class controller {
     @FXML
     public void closeComplete(){
         Stage stage = (Stage) closeComp.getScene().getWindow();
+        stage.close();
+    }
+    //关闭更新拒绝界面的方法
+    @FXML
+    public void closeBlocker(){
+        Stage stage = (Stage) returnBolcker.getScene().getWindow();
         stage.close();
     }
     //退出程序的方法

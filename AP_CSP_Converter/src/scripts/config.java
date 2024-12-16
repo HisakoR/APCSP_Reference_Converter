@@ -13,6 +13,8 @@ public class config {
     0 - 英语
     1 - 中文
      */
+    public static int versions = 10014;
+
     public void initialize() throws IOException {
         filer filer = new filer();
         File saver = new File("output");
