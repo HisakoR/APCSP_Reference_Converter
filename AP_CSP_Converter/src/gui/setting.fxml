@@ -22,7 +22,7 @@
             <Font name="Segoe UI Bold" size="42.0" />
          </font>
       </Text>
-      <Button layoutX="293.0" layoutY="354.0" mnemonicParsing="false" text="Buy GTA VI for me" textFill="#0000009a">
+      <Button layoutX="293.0" layoutY="354.0" mnemonicParsing="false" onMouseClicked="#donation" text="Buy GTA VI for me" textFill="#0000009a">
          <font>
             <Font name="Segoe UI Bold" size="13.0" />
          </font>

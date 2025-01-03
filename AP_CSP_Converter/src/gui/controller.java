@@ -76,6 +76,8 @@ public class controller {
     private Text versionSetting;
     @FXML
     private Text mainVersion;
+    @FXML
+    private Button donator;
 
     public static void setStage(Stage primStage){
         stage = primStage;
@@ -296,6 +298,15 @@ public class controller {
     public void closeWindow(){
         Stage stage = (Stage) setCancel.getScene().getWindow();
         stage.close();
+    }
+    @FXML
+    public void closeDonate(){
+        Stage stage = (Stage) donator.getScene().getWindow();
+        stage.close();
+    }
+    @FXML
+    public void donation(MouseEvent event){
+        dropWindow("donating", "Thank you");
     }
     //关闭完成界面的方法
     @FXML
